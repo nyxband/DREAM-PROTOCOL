@@ -2,7 +2,7 @@
 <html lang="pt-PT">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>DREAM PROTOCOL: SISTEMS</title>
     <link rel="icon" type="image/png" href="AELYS_logo.png" />
     <link rel="apple-touch-icon" href="AELYS_logo.png" />
@@ -35,90 +35,9 @@
         overscroll-behavior: contain;
       }
 
-      /* Audio Control - Fixed and Responsive + Collapsible */
-      .audio-control {
-        position: fixed;
-        bottom: calc(16px + var(--mobile-nav-h) + var(--safe-bottom));
-        left: 16px;
-        width: 240px;
-        font-family: 'Press Start 2P', monospace;
-        font-size: 8px;
-        color: #66d9ff;
-        background: rgba(5, 5, 8, 0.98);
-        border: 2px solid rgba(102,217,255,0.5);
-        padding: 12px;
-        box-shadow: 0 0 20px rgba(102,217,255,0.3);
-        z-index: 9999;
-        pointer-events: auto;
-      }
-
-      .audio-control.collapsed {
-        width: 170px;
-        padding: 10px;
-      }
-
-      .audio-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 10px;
-        letter-spacing: 2px;
-        font-size: 10px;
-        color: #66d9ff;
-        text-shadow: 0 0 10px #66d9ff;
-        user-select: none;
-      }
-
-      .audio-header-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-      }
-
-      .audio-mini {
-        font-size: 8px;
-        color: rgba(102,217,255,0.8);
-        letter-spacing: 0px;
-        text-shadow: none;
-      }
-
-      .audio-header-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-
-      .audio-icon-btn {
-        border: 1px solid rgba(102,217,255,0.5);
-        background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
-        color: #66d9ff;
-        padding: 8px 8px;
-        line-height: 1;
-        font-size: 9px;
-        cursor: pointer;
-        min-width: 36px;
-        min-height: 32px;
-      }
-
-      .audio-icon-btn:hover {
-        box-shadow: 0 0 14px rgba(102, 217, 255, 0.35);
-        border-color: rgba(102,217,255,0.9);
-      }
-
-      .audio-body { display: block; }
-      .audio-control.collapsed .audio-body { display: none; }
-
-      .audio-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-      }
-
+      /* Settings Gear and Sliders */
       .audio-label {
-        width: 56px;
+        width: 120px;
         font-size: 7px;
         opacity: 0.9;
       }
@@ -128,11 +47,12 @@
         height: 10px;
         -webkit-appearance: none;
         appearance: none;
-        background: linear-gradient(to right, #66d9ff 0%, #66d9ff var(--value, 20%), #1a1a2e var(--value, 20%), #1a1a2e 100%);
+        background: #1a1a2e;
         border: 1px solid #444;
         border-radius: 0;
         cursor: pointer;
         outline: none;
+        position: relative;
       }
 
       .audio-slider::-webkit-slider-thumb {
@@ -143,7 +63,7 @@
         background: #66d9ff;
         border: 2px solid #fff;
         cursor: pointer;
-        box-shadow: 0 0 10px #66d9ff, 0 0 20px #66d9ff;
+        box-shadow: 0 0 10px #66d9ff;
       }
 
       .audio-slider::-moz-range-thumb {
@@ -152,20 +72,12 @@
         background: #66d9ff;
         border: 2px solid #fff;
         cursor: pointer;
-        box-shadow: 0 0 10px #66d9ff, 0 0 20px #66d9ff;
+        box-shadow: 0 0 10px #66d9ff;
         border-radius: 0;
       }
 
-      .audio-slider::-webkit-slider-runnable-track { height: 10px; }
-
-      .audio-slider::-moz-range-track {
-        height: 10px;
-        background: #1a1a2e;
-        border: 1px solid #444;
-      }
-
       .audio-value {
-        width: 40px;
+        width: 44px;
         text-align: right;
         font-size: 8px;
         color: #66d9ff;
@@ -191,17 +103,14 @@
         box-shadow: 0 0 15px rgba(102, 217, 255, 0.5);
       }
 
-      .audio-toggle:active { transform: scale(0.98); }
-
       .audio-toggle.muted {
         border-color: #ff4466;
         color: #ff4466;
         text-shadow: 0 0 5px #ff4466;
       }
 
-      .audio-toggle.muted:hover {
-        background: rgba(255, 68, 102, 0.2);
-        box-shadow: 0 0 15px rgba(255, 68, 102, 0.5);
+      #app {
+        filter: brightness(var(--exposure, 1));
       }
 
       .scanline {
@@ -421,18 +330,26 @@
       }
 
       /* Mobile layout: show ALL 3 panels (stacked) + compact audio button */
-      @media (max-width: 767px) {
+      @media (max-width: 1100px), (pointer: coarse) {
         :root { --mobile-nav-h: 0px; }
+
+        /* Forçar orientação vertical no layout móvel */
+        html, body {
+          height: 100dvh;
+          overflow: hidden; /* Evita que o body faça scroll, o scroll deve ser no ecrã de jogo */
+          position: fixed; /* Ajuda a evitar o scroll indesejado do browser no Android */
+          width: 100%;
+        }
 
         .narrative-toggle-btn { display: block; }
 
         .narrative-content-collapsed {
-          max-height: 32px;
+          max-height: 44px;
           overflow: hidden;
           font-size: 8px;
-          line-height: 1.3;
-          mask-image: linear-gradient(to bottom, black 10%, transparent 70%);
-          -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 70%);
+          line-height: 1.4;
+          mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
+          -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
           transition: all 0.3s ease;
         }
 
@@ -451,7 +368,7 @@
         .left-toggle-btn { display: block; }
 
         .left-content-collapsed {
-          max-height: 72px;
+          max-height: 84px;
           overflow: hidden;
           font-size: 8px;
           line-height: 1.3;
@@ -460,17 +377,45 @@
           transition: all 0.3s ease;
         }
 
-        #game-screen {
-          overflow-y: auto;
+        #game-screen:not(.hidden) {
+          height: 100dvh !important;
+          overflow-y: auto !important;
           -webkit-overflow-scrolling: touch;
+          display: flex;
+          flex-direction: column;
+          border-width: 2px;
+          padding-bottom: 120px; /* Espaço para as definições e navegação */
         }
 
-        #game-screen > .grid { height: auto !important; }
-        #panel-left, #panel-center, #panel-right { overflow: visible !important; }
+        /* Transformar a grid em flex column para mobile */
+        #game-screen:not(.hidden) > .grid { 
+          display: flex !important;
+          flex-direction: column !important;
+          height: auto !important; 
+          min-height: 100%;
+        }
+
+        #panel-left, #panel-center, #panel-right { 
+          width: 100% !important;
+          height: auto !important;
+          overflow: visible !important; 
+          flex: none !important;
+        }
+
         #panel-left { border-bottom: 2px solid rgba(17,17,17,0.8); }
-        #panel-center { border-bottom: 2px solid rgba(17,17,17,0.8); }
+        
+        /* Mobile: Reorder center panel to show Dialogue/Choices ABOVE narrative */
+        #panel-center { 
+          border-bottom: 2px solid rgba(17,17,17,0.8); 
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        #panel-center > #narrative-wrapper { order: 4; margin-top: 16px; }
+        #panel-center > #dialogue-container { order: 1; }
+        #panel-center > #clue-display { order: 2; }
+        #panel-center > #protocol-analysis { order: 3; }
+
         .portrait { width: 76px; height: 76px; }
-        #game-screen { border-width: 2px; padding-bottom: 84px; }
 
         /* ===== AUDIO CONTROL MOBILE FIX ===== */
         .audio-control {
@@ -532,11 +477,13 @@
         .audio-control .audio-slider {
           touch-action: none;
           pointer-events: auto;
-          height: 32px;
+          height: 44px;
+          width: 100%;
           cursor: pointer;
           -webkit-user-select: none;
           user-select: none;
           z-index: 10001;
+          position: relative;
         }
 
         .audio-control .audio-slider::-webkit-slider-thumb {
@@ -564,6 +511,20 @@
         .audio-control .audio-slider::-webkit-slider-runnable-track { height: 32px; }
 
         .audio-control .audio-toggle { min-height: 52px; padding: 14px; }
+
+        /* Forçar stacking vertical em todos os telemóveis */
+        #game-screen:not(.hidden) > .grid { 
+          display: flex !important;
+          flex-direction: column !important;
+          height: auto !important; 
+          min-height: 100%;
+        }
+
+        #panel-left, #panel-center, #panel-right { 
+          width: 100% !important;
+          height: auto !important;
+          flex: none !important;
+        }        
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -598,6 +559,7 @@
         box-shadow: 0 0 30px rgba(102, 217, 255, 0.3);
       }
 
+      /* Fechar (X) - por padrão NÃO é fixo (apenas alguns overlays específicos usam sticky) */
       .modal-close {
         position: absolute;
         top: 12px;
@@ -613,6 +575,16 @@
         align-items: center;
         justify-content: center;
         transition: all 0.2s;
+        z-index: 10;
+        pointer-events: auto;
+      }
+
+      /* X "fixo" DENTRO do próprio modal (acompanha o scroll interno) */
+      .sticky-close {
+        position: sticky !important;
+        top: calc(12px + var(--safe-top)) !important;
+        z-index: 60;
+        align-self: flex-start;
       }
 
       .modal-close:hover {
@@ -700,6 +672,20 @@
         box-shadow: 0 0 18px rgba(102,217,255,0.25);
         user-select: none;
       }
+
+      #settings-btn {
+        top: calc(12px + var(--safe-top) + 56px);
+        right: 12px;
+        z-index: 9998;
+      }
+
+      @media (max-width: 1024px), (pointer: coarse) {
+        #settings-btn {
+          top: calc(12px + var(--safe-top));
+          right: 90px;
+        }
+      }
+
       .pause-fab:hover {
         border-color: rgba(102,217,255,0.95);
         box-shadow: 0 0 22px rgba(102,217,255,0.4);
@@ -1102,22 +1088,23 @@
         bottom: 24px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(102, 217, 255, 0.3);
-        color: rgba(102, 217, 255, 0.6);
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid rgba(102, 217, 255, 0.5);
+        color: #66d9ff;
         font-family: 'Press Start 2P', monospace;
-        font-size: 8px;
-        padding: 10px 16px;
+        font-size: 10px;
+        padding: 14px 24px;
         cursor: pointer;
         transition: all 0.2s;
-        z-index: 100;
+        z-index: 9999; /* Acima das scanlines */
+        pointer-events: auto;
       }
       
       .skip-btn:hover {
-        background: rgba(102, 217, 255, 0.1);
-        border-color: rgba(102, 217, 255, 0.7);
-        color: #66d9ff;
-        box-shadow: 0 0 10px rgba(102, 217, 255, 0.3);
+        background: rgba(102, 217, 255, 0.2);
+        border-color: #66d9ff;
+        box-shadow: 0 0 20px rgba(102, 217, 255, 0.5);
+        transform: translateX(-50%) scale(1.05);
       }
       #intro-image { 
         filter: drop-shadow(0 0 30px rgba(102,217,255,0.3)); 
@@ -1178,6 +1165,72 @@
         }
       }
 
+      /* Achievements & Trophies */
+      .locked-reward {
+        filter: grayscale(100%) brightness(40%);
+        opacity: 0.7;
+      }
+      
+      .achievement-card {
+        background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+        border: 2px solid #444;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+      }
+      
+      .achievement-card.unlocked {
+        border-color: #ffaa44;
+        box-shadow: 0 0 10px rgba(255, 170, 68, 0.2);
+        cursor: pointer;
+      }
+
+      .achievement-card.unlocked:hover {
+        transform: scale(1.05);
+        border-color: #66d9ff;
+        box-shadow: 0 0 20px rgba(102, 217, 255, 0.3);
+      }
+
+      /* Preview Modal Specifics */
+      .preview-frame {
+        border: 2px solid #66d9ff;
+        padding: 20px;
+        background: rgba(0,0,0,0.8);
+        position: relative;
+        overflow: hidden;
+      }
+      .preview-image {
+        max-width: 200px;
+        max-height: 200px;
+        image-rendering: pixelated;
+        filter: drop-shadow(0 0 15px rgba(102, 217, 255, 0.6));
+        animation: diagnostic-float 3s infinite ease-in-out;
+      }
+      @keyframes diagnostic-float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(2deg); }
+      }
+      .diagnostic-line {
+        height: 1px;
+        background: rgba(102, 217, 255, 0.3);
+        width: 100%;
+        margin: 10px 0;
+        position: relative;
+      }
+      .diagnostic-line::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; height: 100%; width: 20%;
+        background: #66d9ff;
+        animation: diagnostic-scan 2s infinite linear;
+      }
+      @keyframes diagnostic-scan {
+        0% { left: 0; } 100% { left: 80%; }
+      }
+
       /* Virus Match-3 Game Styles */
       .virus-grid {
         display: grid;
@@ -1224,11 +1277,196 @@
         object-fit: contain;
         image-rendering: pixelated;
       }
+
+      /* Background Opacity Styles */
+      #pre-intro-screen, #title-screen {
+        position: relative;
+        overflow: hidden;
+      }
+
+      #pre-intro-screen::before, #title-screen::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      #pre-intro-screen::before {
+        background-image: url('fundo_play.gif');
+      }
+
+      #title-screen::before {
+        background-image: url('fundo_mainmenu.gif');
+      }
+
+      /* Ensure content is above the pseudo-element background */
+      #pre-intro-screen > *, #title-screen > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Notification Alert System */
+      #system-notification {
+        position: fixed;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(90%, 500px);
+        background: linear-gradient(180deg, #1a1a2e 0%, #050508 100%);
+        border: 2px solid #ffaa44;
+        box-shadow: 0 0 30px rgba(255, 170, 68, 0.4);
+        padding: 16px;
+        z-index: 100000;
+        transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        pointer-events: none;
+      }
+
+      #system-notification.active { top: 20px; }
+
+      .notif-icon {
+        width: 40px;
+        height: 40px;
+        flex: none;
+        border: 1px solid #ffaa44;
+        background: rgba(255, 170, 68, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+
+      .notif-content { flex: 1; }
+      .notif-title { font-size: 8px; color: #ffaa44; margin-bottom: 4px; }
+      .notif-text { font-size: 9px; color: #fff; line-height: 1.4; }
+
+      /* 🎬 Estilos dos Créditos */
+      #credits-screen {
+        z-index: 30000;
+      }
+
+      #credits-text {
+        padding: 60px 40px;
+        transform: translateY(100vh);
+        animation: scrollCredits 25s cubic-bezier(0.1, 0.1, 0.2, 1) forwards;
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+
+      @keyframes scrollCredits {
+        0% { transform: translateY(100vh); }
+        100% { transform: translateY(0); }
+      }
+
+      /* Garantir que o conteúdo dos créditos não suma e o scroll manual funcione no fim */
+      #credits-content {
+        height: 100%;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        display: flex;
+        flex-direction: column;
+        pointer-events: auto;
+      }
+
+      #credits-content {
+        height: 100%;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        display: flex;
+        flex-direction: column;
+      }
+      #credits-content::-webkit-scrollbar { display: none; }
+
+      /* Efeito de piscar no texto dos créditos */
+      .credits-line {
+        opacity: 0;
+        animation: fadeInOut 3s infinite;
+      }
+
+      @keyframes fadeInOut {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+      }
+
+      /* ===== FULLSCREEN BUTTON ===== */
+      .fullscreen-fab {
+        position: fixed;
+        right: calc(12px + var(--safe-bottom));
+        bottom: calc(12px + var(--safe-bottom));
+        z-index: 12001;
+        pointer-events: auto;
+        background: linear-gradient(180deg, rgba(26,26,46,0.95) 0%, rgba(15,15,26,0.95) 100%);
+        border: 2px solid rgba(102,217,255,0.55);
+        color: #66d9ff;
+        font-size: 12px;
+        padding: 10px 12px;
+        min-height: 44px;
+        min-width: 44px;
+        box-shadow: 0 0 18px rgba(102,217,255,0.25);
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.92;
+      }
+
+      .fullscreen-fab:hover {
+        border-color: rgba(102,217,255,0.95);
+        box-shadow: 0 0 22px rgba(102,217,255,0.4);
+        opacity: 1;
+      }
+
+      .fullscreen-fab.is-on {
+        border-color: rgba(255,170,68,0.7);
+        color: #ffaa44;
+        box-shadow: 0 0 22px rgba(255,170,68,0.25);
+      }
     </style>
   </head>
-
   <body>
     <div class="scanline"></div>
+
+    <!-- System Notification Alert -->
+    <div id="system-notification" role="alert">
+      <div class="notif-icon">🏆</div>
+      <div class="notif-content">
+        <div class="notif-title">SISTEMA ÆLYS - CONQUISTA</div>
+        <div id="notif-text" class="notif-text">RECOMPENSA DESBLOQUEADA</div>
+      </div>
+    </div>
+
+    <!-- Fullscreen Button (Bottom Right) -->
+    <button id="fullscreen-btn" class="fullscreen-fab" type="button" aria-label="Ecrã inteiro" title="Ecrã inteiro" onclick="toggleFullscreen()">
+      ⛶
+    </button>
+
+    <!-- Fullscreen Help (iOS fallback) -->
+    <div id="fullscreen-help" class="modal-overlay" style="z-index: 35000;">
+      <div class="modal-content" style="max-width: 520px; border-color: #66d9ff;">
+        <button class="modal-close" onclick="closeModal('fullscreen-help')">×</button>
+        <div class="modal-title">ECRÃ INTEIRO</div>
+        <div class="modal-body">
+          <p>O teu browser não permite ecrã inteiro programático neste dispositivo.</p>
+          <p><strong>iPhone/iPad (Safari):</strong> usa o botão <strong>Partilhar</strong> e escolhe <strong>Adicionar ao ecrã principal</strong>. Ao abrir a partir do ícone, fica sem barra do navegador.</p>
+          <p><strong>Android (Chrome):</strong> Menu ⋮ → <strong>Adicionar ao ecrã principal</strong> / <strong>Instalar app</strong> para modo imersivo.</p>
+          <p style="color:#ffaa44;">Dica: também podes rodar para horizontal para mais espaço (se o jogo permitir).</p>
+        </div>
+      </div>
+    </div>
 
     <!-- Pause/Menu Button (visible only during game) -->
     <button id="pause-btn" class="pause-fab hidden" type="button" onclick="openPauseMenu(event)" aria-label="Menu">☰ MENU</button>
@@ -1254,13 +1492,13 @@
 
     <!-- Mini-game Overlay -->
     <div id="minigame-overlay" class="modal-overlay minigame-overlay" role="dialog" aria-modal="true" aria-label="Mini-jogo de captura">
-      <div class="minigame-panel pixel-border" onclick="event.stopPropagation()">
+      <div class="minigame-panel pixel-border" onclick="event.stopPropagation()" style="position: relative;">
+        <button class="audio-icon-btn" type="button" onclick="abortMinigame()" aria-label="Abortar mini-jogo" title="Abortar" style="position: sticky; top: 0; float: right; z-index: 1000; margin-top: -8px; margin-right: -8px;">×</button>
         <div class="flex items-start justify-between gap-4">
           <div>
             <div id="mg-title" class="mg-title">PROTOCOLO DE CONTENÇÃO</div>
             <div id="mg-desc" class="mg-sub"></div>
           </div>
-          <button class="audio-icon-btn" type="button" onclick="abortMinigame()" aria-label="Abortar mini-jogo" title="Abortar">×</button>
         </div>
 
         <div class="mg-hud">
@@ -1479,7 +1717,7 @@
 
     <!-- Audio Element -->
     <audio id="bg-music" loop preload="auto">
-      <source id="bg-music-source" src="instrumental_game.mpeg" type="audio/mpeg" />
+      <source id="bg-music-source" src="instrumental_game.mp3" type="audio/mpeg" />
       O teu browser não suporta áudio.
     </audio>
 
@@ -1498,38 +1736,45 @@
       <source src="instrumental_game_leaderboard.mp3" type="audio/mpeg" />
     </audio>
 
-    <!-- Audio Control Panel -->
-    <div id="audio-control" class="audio-control" aria-label="Painel de áudio">
-      <div class="audio-header">
-        <div class="audio-header-title" id="audio-header-toggle" title="Expandir/Minimizar">
-          <span>♪ AUDIO ♪</span>
-          <span id="audio-mini" class="audio-mini"></span>
-        </div>
-        <div class="audio-header-actions">
-          <button id="audio-collapse" class="audio-icon-btn" type="button" aria-label="Minimizar áudio" title="Minimizar">▾</button>
-        </div>
-      </div>
+    <!-- Settings Button -->
+    <button id="settings-btn" class="pause-fab" onclick="openModal('settings-modal')" aria-label="Definições">⚙</button>
 
-      <div class="audio-body">
-        <div class="audio-row">
-          <span class="audio-label">VOLUME</span>
-          <input
-            id="music-volume"
-            class="audio-slider"
-            type="range"
-            min="0"
-            max="100"
-            value="5"
-            style="--value: 5%"
-            aria-label="Volume da música"
-          />
-          <span id="music-value" class="audio-value">5%</span>
-        </div>
-
-        <button id="audio-toggle" class="audio-toggle" type="button">♪ AUDIO ON</button>
-
-        <div class="mt-3" style="font-size: 7px; color: rgba(224,224,224,0.55); line-height: 1.6;">
-          Dica: em mobile, o browser pode bloquear autoplay.
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay" style="z-index: 32000;">
+      <div class="modal-content" style="max-width: 400px; border-color: #66d9ff;">
+        <button class="modal-close" onclick="closeModal('settings-modal')">×</button>
+        <div class="modal-title">DEFINIÇÕES</div>
+        <div class="modal-body space-y-6">
+          <!-- Instrumental Volume -->
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="audio-label">VOLUME MÚSICA</span>
+              <span id="music-vol-val" class="audio-value">25%</span>
+            </div>
+            <input id="music-vol-slider" class="audio-slider w-full" type="range" min="0" max="100" value="25" />
+          </div>
+          <!-- SFX Volume -->
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="audio-label">VOLUME SONS (SFX)</span>
+              <span id="sfx-vol-val" class="audio-value">50%</span>
+            </div>
+            <input id="sfx-vol-slider" class="audio-slider w-full" type="range" min="0" max="100" value="50" />
+          </div>
+          <!-- Exposure -->
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="audio-label">EXPOSIÇÃO/BRILHO</span>
+              <span id="exposure-val" class="audio-value">100%</span>
+            </div>
+            <input id="exposure-slider" class="audio-slider w-full" type="range" min="50" max="150" value="100" />
+          </div>
+          
+          <button id="audio-toggle-btn" class="audio-toggle" type="button">AUDIO ON</button>
+          
+          <div class="mt-4 tiny-muted" style="font-size: 7px;">
+            Dica: No telemóvel, o brilho também depende das definições do aparelho.
+          </div>
         </div>
       </div>
     </div>
@@ -1538,7 +1783,7 @@
       <div class="p-4 border-b border-gray-800 bg-gray-900 bg-opacity-90 flex justify-between items-center z-10">
         <div>
           <h2 class="text-xs neon-amber mb-1">JOGO SECRETO: SPACE REBEL</h2>
-          <div class="text-xs text-gray-400">SCORE: <span id="sg-score" class="text-white">0</span> | VIVAS: <span id="sg-lives" class="text-red-400">3</span></div>
+          <div class="text-xs text-gray-400">SCORE: <span id="sg-score" class="text-white">0</span> | VIDAS: <span id="sg-lives" class="text-red-400">3</span></div>
         </div>
         <div class="flex items-center gap-2">
           <span class="text-[8px] text-gray-500 hidden md:inline-block">(ESC/P)</span>
@@ -1596,13 +1841,192 @@
             <button id="sg-start-btn" onclick="SecretGame.start()" class="menu-button px-8 py-4 text-sm"><span class="neon-amber">▶</span> INICIAR NOVA MISSÃO</button>
           </div>
         </div>
+
+        <!-- Reward Overlay -->
+        <div id="sg-reward-overlay" class="absolute inset-0 bg-black bg-opacity-95 flex flex-col items-center justify-center p-4 hidden z-50">
+          <h1 class="text-xl neon-green mb-2">BOSS DESTRUÍDO!</h1>
+          <p class="text-xs text-gray-400 mb-8">Escolhe a tua recompensa:</p>
+          <div class="flex flex-col gap-4 w-full max-w-sm">
+            <button onclick="SecretGame.applyReward('damage')" class="menu-button p-4 text-center group">
+              <div class="neon-red text-sm mb-1">DANO DUPLICADO</div>
+              <div class="text-[8px] text-gray-500 group-hover:text-gray-300">Os teus tiros dão 2x mais dano.</div>
+            </button>
+            <button onclick="SecretGame.applyReward('xp')" class="menu-button p-4 text-center group">
+              <div class="neon-purple text-sm mb-1">DOBRO DO XP</div>
+              <div class="text-[8px] text-gray-500 group-hover:text-gray-300">Ganhas 2x mais pontos por abate.</div>
+            </button>
+            <button onclick="SecretGame.applyReward('heal')" class="menu-button p-4 text-center group">
+              <div class="neon-green text-sm mb-1">RECUPERAR VIDA</div>
+              <div class="text-[8px] text-gray-500 group-hover:text-gray-300">Restaura a tua vida ao máximo.</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Endings Gallery Overlay -->
+    <div id="endings-gallery" class="modal-overlay" style="z-index: 25000;">
+      <div class="modal-content" style="max-width: 800px; padding-top: 16px;">
+        <button class="modal-close" onclick="closeModal('endings-gallery')" style="position: sticky; top: -8px; float: right; z-index: 1000; margin-right: -8px; margin-bottom: -32px;">×</button>
+        <div class="flex justify-between items-start mb-4 border-b border-gray-800 pb-2">
+          <div class="modal-title mb-0" style="color: #ffaa44; text-shadow: 0 0 10px #ffaa44; border: none;">GALERIA</div>
+        </div>
+        <div class="modal-body pb-20">
+          <div class="text-center mb-6 text-xs text-gray-400">Coleciona todos os 5 finais para completares o protocolo.</div>
+          <div id="endings-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- Cards will be injected here -->
+          </div>
+        </div>
+        <!-- Footer fixo para o botão de troféus -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 bg-black border-t border-gray-800 flex justify-center">
+          <button onclick="openTrophies()" class="menu-button text-center flex items-center justify-center gap-4" style="width: 100%; max-width: 400px; border-color: #ffaa44; color: #ffaa44; box-shadow: 0 0 15px rgba(255, 170, 68, 0.2);">
+            <span>🏆</span> VER RECOMPENSAS E TROFÉUS
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trophies Overlay -->
+    <div id="trophies-overlay" class="modal-overlay" style="z-index: 26000;">
+      <div class="modal-content" style="max-width: 600px;">
+        <button class="modal-close" onclick="closeModal('trophies-overlay')">×</button>
+        <div class="modal-title" style="color: #ffaa44; text-shadow: 0 0 10px #ffaa44;">RECOMPENSAS & TROFÉUS</div>
+        <div class="modal-body">
+          <div class="text-center mb-6 text-xs text-gray-400">Desbloqueia capturando os rebeldes, completando os finais e atingindo os scores. Clica num item para ver detalhes.</div>
+          
+          <h3 class="text-xs neon-cyan mb-2 mt-4">FRAGMENTOS (CAPTURA)</h3>
+          <div id="trophies-rebels" class="grid grid-cols-4 gap-2 mb-4"></div>
+          
+          <h3 class="text-xs neon-purple mb-2 mt-4">CHAVES (FINAIS)</h3>
+          <div id="trophies-keys" class="grid grid-cols-5 gap-2 mb-4"></div>
+          
+          <h3 class="text-xs neon-amber mb-2 mt-4">TROFÉUS (SPACE REBEL)</h3>
+          <div id="trophies-scores" class="grid grid-cols-4 gap-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reward Preview Modal (Inspection) -->
+    <div id="reward-preview-modal" class="modal-overlay" style="z-index: 27000;">
+      <div class="modal-content" style="max-width: 450px; border-color: #ffaa44;">
+        <button class="modal-close" onclick="closeModal('reward-preview-modal')">×</button>
+        <div id="preview-title" class="modal-title" style="color: #ffaa44; border-bottom-color: #ffaa44;">DIAGNÓSTICO TÉCNICO</div>
+        <div class="modal-body flex flex-col items-center">
+          <div class="preview-frame w-full flex items-center justify-center mb-6">
+            <div class="scanline absolute inset-0 opacity-20"></div>
+            <img id="preview-img-large" src="" class="preview-image" alt="Visualização">
+          </div>
+          <div class="diagnostic-line"></div>
+          <div id="preview-desc" class="text-[10px] leading-relaxed text-gray-300 text-center italic px-4"></div>
+          <div class="diagnostic-line"></div>
+          <div class="w-full text-right mt-2">
+            <span class="text-[7px] text-cyan-600">SISTEMA ÆLYS ANALYTICS V.4.2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div id="credits-modal" class="modal-overlay" style="z-index: 28000;">
+      <div class="modal-content" style="max-width: 600px; border-color: #66d9ff; max-height: 85vh;">
+        <button class="modal-close sticky-close" onclick="closeModal('credits-modal')">×</button>
+        <div class="modal-title" style="color: #66d9ff; border-bottom-color: #66d9ff; text-align: center;">CRÉDITOS FINAIS</div>
+        <div class="modal-body" style="text-align: center; padding: 20px 10px;">
+          <div class="mb-6">
+            <h3 class="neon-cyan text-sm mb-4">OBRIGADO POR JOGAR</h3>
+            <p class="text-xs text-gray-300 leading-relaxed mb-4">
+              DREAM PROTOCOL: SYSTEMS<br>
+              Protocolo Completo. Sistema Terminado.
+            </p>
+            <div class="h-px w-32 bg-cyan-800 mx-auto my-4"></div>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            <div>
+              <h4 class="neon-purple text-xs mb-2">DESENVOLVIMENTO & CRIATIVIDADE</h4>
+              <p class="text-gray-400">NYX</p>
+            </div>
+
+            <div>
+              <h4 class="neon-purple text-xs mb-2">ARTES & DESIGN VISUAL</h4>
+              <p class="text-gray-400">Autoria dos NYX, com ajuda de ferramentas de design e AI</p>
+            </div>
+
+            <div>
+              <h4 class="neon-purple text-xs mb-2">MÚSICA & SOUND DESIGN</h4>
+              <p class="text-gray-400">NYX</p>
+            </div>
+
+            <div>
+              <h4 class="neon-purple text-xs mb-2">NARRATIVA & DIALOGO</h4>
+              <p class="text-gray-400">NYX</p>
+            </div>
+          </div>
+
+          <div class="h-px w-32 bg-cyan-800 mx-auto my-6"></div>
+
+          <div class="mb-6">
+            <p class="text-[10px] text-gray-500 mb-4">
+              "Os sonhos são a última fronteira da liberdade."
+            </p>
+          </div>
+
+          <div class="mt-6 p-4 border border-cyan-800 bg-cyan-900 bg-opacity-20 rounded">
+            <h4 class="neon-amber text-xs mb-3">OUVE O EP ORIGINAL</h4>
+            <p class="text-[10px] text-gray-400 mb-3">
+              Inclui todas as faixas instrumentais do jogo(sem estilos retrô).
+            </p>
+            <a href="https://open.spotify.com/album/SEU_LINK_AQUI" target="_blank" rel="noopener noreferrer" 
+               class="inline-block px-6 py-3 bg-green-600 hover:bg-green-500 text-white text-xs rounded-full transition-all hover:scale-105"
+               style="font-family: 'Press Start 2P', monospace; text-decoration: none; box-shadow: 0 0 15px rgba(29, 185, 84, 0.4);">
+              ▶ ABRIR NO SPOTIFY
+            </a>
+          </div>
+
+          <div class="mt-6 text-[8px] text-gray-600">
+            © 2026 DREAM PROTOCOL. Todos os direitos reservados.<br>
+            AELYS Corporation é uma entidade fictícia.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🎬 Créditos Estilo Filme -->
+    <div id="credits-screen" class="hidden fixed inset-0 z-[30000] bg-black flex flex-col items-center justify-center">
+      <!-- Botão SKIP - Garantido no topo -->
+      <button 
+        id="credits-skip" 
+        class="absolute bottom-8 left-1/2 transform -translate-x-1/2 
+               bg-gray-800 border border-gray-600 text-gray-300 
+               px-8 py-4 text-xs hover:bg-gray-700 transition-all"
+        style="z-index: 50000; pointer-events: auto;"
+        onclick="closeCredits()"
+      >
+        SKIP ▶▶
+      </button>
+
+      <div id="credits-content" class="w-full h-full relative">
+        <div id="credits-text" class="text-sm leading-relaxed text-gray-300">
+          <!-- O texto vai ser injetado via JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="modal-overlay" style="z-index: 31000;">
+      <div class="modal-content" style="max-width: 500px; padding: 16px;">
+        <button class="modal-close sticky-close" onclick="closeModal('tutorial-modal')">×</button>
+        <div class="modal-title mb-4" style="color: #66d9ff;">TUTORIAL</div>
+        <div class="flex justify-center w-full">
+          <img id="tutorial-gif" src="" alt="Tutorial" style="max-width: 100%; height: auto; image-rendering: pixelated; border: 2px solid #444;" />
+        </div>
       </div>
     </div>
 
     <div id="app" class="w-screen" style="height: 100dvh; padding-top: var(--safe-top);">
       <div class="w-full h-full flex items-center justify-center p-2 md:p-4 overflow-hidden">
         <!-- Pre-Intro Screen (PLAY button) -->
-        <div id="pre-intro-screen" class="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-black bg-opacity-95">
+        <div id="pre-intro-screen" class="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-black">
           <button id="play-btn" class="pixel-border neon-cyan text-2xl cursor-pointer hover:bg-cyan-900 hover:bg-opacity-20 transition-all" style="min-height: 100px; padding: 32px 64px; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); border: 3px solid #66d9ff; box-shadow: 0 0 20px rgba(102,217,255,0.3);">
             ▶ PLAY
           </button>
@@ -1621,7 +2045,7 @@
         </div>
 
         <!-- Title Screen -->
-        <div id="title-screen" class="text-center fade-in hidden">
+        <div id="title-screen" class="w-full h-full flex flex-col items-center justify-center text-center fade-in hidden">
           <div class="mb-8">
             <h1 class="text-2xl neon-cyan pulse mb-4">DREAM PROTOCOL</h1>
             <h2 class="text-lg neon-purple">SISTEMS</h2>
@@ -1641,7 +2065,11 @@
             </button>
 
             <button id="secret-menu-btn" onclick="openSecretScreen('menu')" class="menu-button text-base px-12 py-6 text-center hidden" style="min-height: 56px; border-color: rgba(255,170,68,0.55); color: #ffaa44;">
-              <span class="neon-amber">▶</span> JOGO SECRETO LEADERBOARD
+              <span class="neon-amber">▶</span> JOGO SECRETO SPACE REBEL
+            </button>
+
+            <button id="gallery-btn" onclick="openEndingsGallery()" class="menu-button text-base px-12 py-6 text-center" style="min-height: 56px; border-color: #ffaa44; color: #ffaa44;">
+              <span class="neon-amber">★</span> GALERIA
             </button>
           </div>
 
@@ -1654,6 +2082,15 @@
             <p class="text-gray-600">TECNICO: DR. SNUTS</p>
             <p class="text-gray-600">SUPERVISOR: AELYS CORPORATION</p>
           </div>
+
+          <!-- Linktree Button -->
+          <div class="mt-12 pb-8 flex justify-center w-full">
+            <a href="https://linktr.ee/nyx.band?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGndpj3W8FBjMak7Gr80SM9qbhiv91lZwAyoXZbtVkDWyrtSpyHLH3wEYDbuCk_aem_aGy_FWgzm5ldkPJzfHomSg" target="_blank" rel="noopener noreferrer" 
+               class="px-6 py-3 border border-cyan-900 bg-black bg-opacity-40 text-cyan-600 hover:text-cyan-400 hover:border-cyan-500 transition-all duration-300 flex items-center gap-3 group"
+               style="font-size: 8px; text-decoration: none; border-radius: 2px;">
+              <span class="group-hover:pulse">🌐</span> LINKTREE ÆLYS CORP
+            </a>
+          </div>
         </div>
 
         <!-- Main Game -->
@@ -1662,7 +2099,7 @@
             <!-- Left Panel - Character Status (Snuts) -->
             <section id="panel-left" class="md:col-span-3 border-b md:border-b-0 md:border-r border-gray-900 p-4 bg-black bg-opacity-40 min-h-0 overflow-y-auto scroll-area">
               <div class="mb-6">
-                <div class="portrait mb-4 mx-auto relative" id="player-portrait" onclick="openModal('snuts-modal')" style="cursor: pointer;">
+                <div class="portrait md-4 mx-auto relative" id="player-portrait" onclick="openModal('snuts-modal')" style="cursor: pointer;">
                   <img
                     id="snuts-main-img"
                     src="./DR_SNUTS.png"
@@ -1681,7 +2118,7 @@
               <!-- Stats -->
               <div class="space-y-4 text-xs">
                 <div>
-                  <div class="flex justify-between mb-1">
+                  <div class="flex justify-between md-1">
                     <span class="text-gray-500">SISTEMA</span>
                     <span id="system-status" class="neon-red">CRITICO</span>
                   </div>
@@ -1691,7 +2128,7 @@
                 </div>
 
                 <div>
-                  <div class="flex justify-between mb-1">
+                  <div class="flex justify-between md-1">
                     <span class="text-gray-500">CONFIANÇA LYSA</span>
                     <span id="evaluation-value" class="text-gray-400">NEUTRO</span>
                   </div>
@@ -1701,7 +2138,7 @@
                 </div>
 
                 <div>
-                  <div class="flex justify-between mb-1">
+                  <div class="flex justify-between md-1">
                     <span class="text-gray-500">EFICIENCIA</span>
                     <span id="efficiency-value" class="neon-amber">65%</span>
                   </div>
@@ -1734,23 +2171,6 @@
                         <span id="vira-status" class="neon-red">EM FUGA</span>
                       </div>
                     </div>
-                    <div class="mt-3 pt-2 border-t border-gray-800">
-                      <div class="flex justify-between">
-                        <span class="text-gray-500">CAPTURA:</span>
-                        <span id="capture-count" class="neon-amber">0/4</span>
-                      </div>
-                      <div class="flex justify-between mt-2">
-                        <span class="text-gray-500">FALHAS:</span>
-                        <span id="fail-count" class="neon-red">0/3</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Session Info -->
-                  <div class="mt-6 pt-4 border-t border-gray-900 text-xs">
-                    <div class="text-gray-600 mb-2">FASE</div>
-                    <div id="chapter-display" class="neon-cyan">01: CAÇA INICIADA</div>
-                    <div id="location-display" class="text-gray-600 mt-2" style="font-size: 8px;">ESTAÇÃO DE SNUTS</div>
                   </div>
                 </div>
                 <button id="left-collapse-toggle" class="left-toggle-btn" onclick="toggleLeftStats()">VER DETALHES ▾</button>
@@ -1767,9 +2187,9 @@
 
               <!-- Dialogue Box -->
               <div id="dialogue-container" class="hidden">
-                <div class="dialogue-box mb-4">
+                <div class="dialogue-box md-4">
                   <button id="undo-btn" class="undo-button" onclick="undo()" title="Voltar Escolha" disabled>↺</button>
-                  <div class="flex gap-4 mb-4" style="align-items: flex-start;">
+                  <div class="flex gap-4 md-4" style="align-items: flex-start;">
                     <div class="portrait" id="npc-portrait"></div>
                     <div class="flex-1 min-w-0">
                       <div id="speaker-name" class="text-xs neon-purple mb-2"></div>
@@ -1782,7 +2202,7 @@
               </div>
 
               <!-- Clue Display -->
-              <div id="clue-display" class="hidden mb-4">
+              <div id="clue-display" class="hidden md-4">
                 <div class="pixel-border p-3 bg-green-900 bg-opacity-30 border-green-500">
                   <div id="clue-text" class="text-xs neon-green"></div>
                 </div>
@@ -1791,7 +2211,7 @@
               <!-- Protocol Analysis -->
               <div id="protocol-analysis" class="hidden">
                 <div class="pixel-border p-4 bg-black bg-opacity-60">
-                  <div class="text-xs mb-4 neon-cyan">[PAINEL DE TÉCNICO]</div>
+                  <div class="text-xs md-4 neon-cyan">[PAINEL DE TÉCNICO]</div>
                   <div id="protocol-content"></div>
                 </div>
               </div>
@@ -1801,7 +2221,7 @@
             <aside id="panel-right" class="md:col-span-3 border-t md:border-t-0 md:border-l border-gray-900 p-4 bg-black bg-opacity-40 min-h-0 overflow-y-auto scroll-area" aria-label="Painel de sistemas">
               <div id="systems-wrapper" class="systems-collapse-container">
                 <div id="systems-content" class="systems-content-collapsed">
-                  <div class="text-xs mb-4 text-gray-600">SISTEMAS</div>
+                  <div class="text-xs md-4 text-gray-600">SISTEMAS</div>
                   <div class="space-y-2">
                     <button class="menu-button" onclick="menuAction('status')"><span class="neon-cyan">▶</span> ESTADO</button>
                     <button class="menu-button" onclick="menuAction('scan')"><span class="neon-purple">▶</span> SCAN REBELDES</button>
@@ -1815,7 +2235,7 @@
 
               <!-- Clues Found -->
               <div class="mt-8 pt-4 border-t border-gray-900">
-                <div class="text-xs mb-4 text-gray-600">PISTAS ENCONTRADAS</div>
+                <div class="text-xs md-4 text-gray-600">PISTAS ENCONTRADAS</div>
                 <div id="clues-list" class="space-y-2 text-xs" style="font-size: 8px;">
                   <div class="text-gray-600">NENHUMA PISTA...</div>
                 </div>
@@ -1831,7 +2251,7 @@
 
               <!-- Secret Objective -->
               <div class="mt-8 pt-4 border-t border-gray-900">
-                <div class="text-xs mb-2 text-red-600">OBJECTIVO</div>
+                <div class="text-xs md-2 text-red-600">OBJECTIVO</div>
                 <div class="text-xs text-red-400" style="font-size: 7px;">
                   FIM À REBELIÃO.<br />CAPTURAR OS 4.
                 </div>
@@ -1845,17 +2265,100 @@
     <script>
       // ==================== SAVE SYSTEM (MAIN MENU ACCESS) ====================
       const DP_SAVE_KEY = 'dp_save_v1';
+      const DP_AUTO_SAVE_KEY = 'dp_auto_save_v1';
+      
+      // Detecta se é dispositivo móvel
+      function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+               window.matchMedia('(pointer: coarse)').matches;
+      }
+      
+      // Sistema de Auto-Save para Mobile
+      class MobileAutoSave {
+        constructor() {
+          this.intervalId = null;
+          this.isMobile = isMobileDevice();
+          this.lastSaveTime = 0;
+          this.MIN_SAVE_INTERVAL = 15000; // 15 segundos mínimo entre saves
+          this._started = false;
+          this._onVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') this.performAutoSave(true);
+          };
+          this._onPageHide = () => this.performAutoSave(true);
+          this._onBeforeUnload = () => this.performAutoSave(true);
+        }
+        
+        start() {
+          if (!this.isMobile || this._started) return;
+          this._started = true;
+          console.log('🔄 Auto-Save Mobile ativado');
+          
+          // Auto-save a cada 30 segundos em mobile
+          this.intervalId = setInterval(() => {
+            this.performAutoSave();
+          }, 30000);
+          
+          // Save silencioso quando a aba/app entra em background ou é fechada
+          document.addEventListener('visibilitychange', this._onVisibilityChange);
+          window.addEventListener('pagehide', this._onPageHide);
+          window.addEventListener('beforeunload', this._onBeforeUnload);
+        }
+        
+        stop() {
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+          }
+          if (this._started) {
+            document.removeEventListener('visibilitychange', this._onVisibilityChange);
+            window.removeEventListener('pagehide', this._onPageHide);
+            window.removeEventListener('beforeunload', this._onBeforeUnload);
+            this._started = false;
+          }
+        }
+        
+        performAutoSave(force = false) {
+          const now = Date.now();
+          if (!force && (now - this.lastSaveTime) < this.MIN_SAVE_INTERVAL) return;
+          
+          if (!gameState || gameState.__hasEnded) return;
+          
+          try {
+            const payload = buildSavePayload();
+            const autoSaveData = {
+              version: 1,
+              timestamp: now,
+              isMobile: true,
+              payload: payload
+            };
+            
+            localStorage.setItem(DP_AUTO_SAVE_KEY, JSON.stringify(autoSaveData));
+            this.lastSaveTime = now;
+            
+            console.log('✅ Auto-Save Mobile completo');
+          } catch (e) {
+            console.error('❌ Erro no Auto-Save Mobile:', e);
+          }
+        }
+      }
+      
+      const mobileAutoSave = new MobileAutoSave();
 
       function _safeParseJSON(raw) {
         try { return JSON.parse(raw); } catch { return null; }
       }
 
       function hasSavedGame() {
-        const raw = localStorage.getItem(DP_SAVE_KEY);
-        if (!raw) return false;
-        const obj = _safeParseJSON(raw);
-        const valid = !!(obj && obj.version === 1 && obj.payload && !obj.payload.hasEnded);
-        return valid;
+        const mainRaw = localStorage.getItem(DP_SAVE_KEY);
+        const autoRaw = localStorage.getItem(DP_AUTO_SAVE_KEY);
+
+        const mainObj = _safeParseJSON(mainRaw);
+        const autoObj = _safeParseJSON(autoRaw);
+
+        const mainValid = !!(mainObj && mainObj.version === 1 && mainObj.payload && !mainObj.payload.hasEnded);
+        const autoValid = !!(autoObj && autoObj.version === 1 && autoObj.payload && !autoObj.payload.hasEnded);
+
+        return mainValid || autoValid;
       }
 
       function buildSavePayload() {
@@ -1915,16 +2418,26 @@
       }
 
       function loadSavedPayload() {
-        const raw = localStorage.getItem(DP_SAVE_KEY);
-        if (!raw) return null;
-        const obj = _safeParseJSON(raw);
-        if (!obj || obj.version !== 1 || !obj.payload) return null;
-        if (obj.payload.hasEnded) return null;
-        return obj.payload;
+        const mainObj = _safeParseJSON(localStorage.getItem(DP_SAVE_KEY));
+        const autoObj = _safeParseJSON(localStorage.getItem(DP_AUTO_SAVE_KEY));
+
+        const mainPayload = (mainObj && mainObj.version === 1 && mainObj.payload && !mainObj.payload.hasEnded)
+          ? mainObj.payload
+          : null;
+        const autoPayload = (autoObj && autoObj.version === 1 && autoObj.payload && !autoObj.payload.hasEnded)
+          ? autoObj.payload
+          : null;
+
+        if (!mainPayload && !autoPayload) return null;
+        if (mainPayload && !autoPayload) return mainPayload;
+        if (!mainPayload && autoPayload) return autoPayload;
+
+        return (autoPayload.savedAt || 0) > (mainPayload.savedAt || 0) ? autoPayload : mainPayload;
       }
 
       function clearSavedGame() {
         try { localStorage.removeItem(DP_SAVE_KEY); } catch {}
+        try { localStorage.removeItem(DP_AUTO_SAVE_KEY); } catch {}
       }
 
       function updateMainMenuSaveUI() {
@@ -2006,6 +2519,8 @@
       }
 
       function resumeSavedGame() {
+        beepSynth.playBeep(1000, 0.1, 0.08);
+
         const payload = loadSavedPayload();
         if (!payload) {
           clearSavedGame();
@@ -2021,6 +2536,12 @@
 
         setActivePanel('center');
         addSystemMessage('SAVE CARREGADO');
+        
+        // INICIAR AUTO-SAVE MOBILE ao resumir
+        if (mobileAutoSave.isMobile) {
+          mobileAutoSave.start();
+        }
+        
         setTimeout(() => {
           startDialogue(gameState.currentDialogue || 'first', true);
         }, 300);
@@ -2048,6 +2569,10 @@
         saveGameToStorage('menu');
         closePauseMenu();
         trySkipTyping();
+        
+        // PARAR AUTO-SAVE ao sair do jogo
+        mobileAutoSave.stop();
+        
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('title-screen').classList.remove('hidden');
         document.getElementById('pause-btn').classList.add('hidden');
@@ -2092,8 +2617,14 @@
           gain.connect(this.audioContext.destination);
           osc.frequency.value = freq;
           osc.type = 'sine';
-          gain.gain.setValueAtTime(volume, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+          
+          // Apply Master Settings
+          const sfxVol = (window.GameSettings && window.GameSettings.sfxVolume !== undefined) ? window.GameSettings.sfxVolume : 0.5;
+          const isMuted = window.GameSettings ? window.GameSettings.muted : false;
+          const finalVol = isMuted ? 0 : (volume * sfxVol * 1.5);
+          
+          gain.gain.setValueAtTime(finalVol, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
           osc.start(now);
           osc.stop(now + duration);
         }
@@ -2139,26 +2670,24 @@
 
       // ==================== MOBILE RESPONSIVE HELPERS ====================
       function isMobileLayout() {
-        return window.matchMedia('(max-width: 767px)').matches;
+        // Deteta largura ou se é touchscreen
+        return window.matchMedia('(max-width: 1100px)').matches || window.matchMedia('(pointer: coarse)').matches;
       }
 
       function setActivePanel(which) {
-        const left = document.getElementById('panel-left');
-        const center = document.getElementById('panel-center');
-        const right = document.getElementById('panel-right');
-        if (!left || !center || !right) return;
-
-        left.style.display = '';
-        center.style.display = '';
-        right.style.display = '';
-
         if (!isMobileLayout()) return;
+        
+        const target = document.getElementById(`panel-${which}`);
+        const container = document.getElementById('game-screen');
+        if (!target || !container) return;
 
-        const map = { left, center, right };
-        const target = map[which];
-        if (!target) return;
-
-        try { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch {}
+        // No Android/Chrome, scrollIntoView pode ser instável com grid. 
+        // Vamos usar o container de scroll diretamente para mais precisão.
+        const targetOffset = target.offsetTop;
+        container.scrollTo({
+          top: targetOffset,
+          behavior: 'smooth'
+        });
       }
 
       function toggleNarrative() {
@@ -2203,145 +2732,169 @@
         if (isMobileLayout()) setActivePanel('left');
       }
 
-      // ==================== AUDIO SYSTEM (SINGLE TRACK) ====================
+      // ==================== SYSTEM SETTINGS (AUDIO & EXPOSURE) ====================
       (function() {
-        const LS_KEY = 'dp_audio_settings_v1';
+        const LS_KEY = 'dp_system_settings_v1';
+        
+        window.GameSettings = {
+          musicVolume: 0.25,
+          sfxVolume: 0.5,
+          exposure: 1,
+          muted: false
+        };
 
         function loadSettings() {
           try {
             const raw = localStorage.getItem(LS_KEY);
-            if (!raw) return null;
-            return JSON.parse(raw);
-          } catch { return null; }
+            if (raw) {
+              const saved = JSON.parse(raw);
+              Object.assign(window.GameSettings, saved);
+            }
+          } catch (e) { console.error('Error loading settings', e); }
         }
 
-        function saveSettings(settings) {
-          try { localStorage.setItem(LS_KEY, JSON.stringify(settings)); } catch {}
+        function saveSettings() {
+          try {
+            localStorage.setItem(LS_KEY, JSON.stringify(window.GameSettings));
+          } catch (e) { console.error('Error saving settings', e); }
         }
 
-        function initAudioControls() {
-          const musicElement = document.getElementById('bg-music');
-          const musicSlider = document.getElementById('music-volume');
-          const musicValueDisplay = document.getElementById('music-value');
-          const audioToggle = document.getElementById('audio-toggle');
-          const audioControl = document.getElementById('audio-control');
-          const audioCollapse = document.getElementById('audio-collapse');
-          const audioHeaderToggle = document.getElementById('audio-header-toggle');
-          const audioMini = document.getElementById('audio-mini');
+        function initSettings() {
+          const bgMusic = document.getElementById('bg-music');
+          const mgMusic = document.getElementById('minigame-music');
+          const sabMusic = document.getElementById('sabotage-music');
+          const secMusic = document.getElementById('secret-game-music');
 
-          if (!musicElement || !musicSlider || !musicValueDisplay || !audioToggle || !audioControl || !audioCollapse || !audioHeaderToggle || !audioMini) {
-            setTimeout(initAudioControls, 100);
+          const musicSlider = document.getElementById('music-vol-slider');
+          const musicValText = document.getElementById('music-vol-val');
+          const sfxSlider = document.getElementById('sfx-vol-slider');
+          const sfxValText = document.getElementById('sfx-vol-val');
+          const exposureSlider = document.getElementById('exposure-slider');
+          const exposureValText = document.getElementById('exposure-val');
+          const audioToggleBtn = document.getElementById('audio-toggle-btn');
+
+          if (!musicSlider || !sfxSlider || !exposureSlider || !audioToggleBtn) {
+            setTimeout(initSettings, 100);
             return;
           }
 
-          let isMuted = false;
-          let currentVolume = 0.05;
-          let isCollapsed = false;
+          loadSettings();
 
-          const saved = loadSettings();
-          if (saved) {
-            if (typeof saved.volume === 'number') currentVolume = Math.max(0, Math.min(1, saved.volume));
-            if (typeof saved.muted === 'boolean') isMuted = saved.muted;
-            if (typeof saved.collapsed === 'boolean') isCollapsed = saved.collapsed;
+          function applySettings() {
+            const { musicVolume, sfxVolume, exposure, muted } = window.GameSettings;
+            
+            // Apply Music
+            const musicEffVol = muted ? 0 : musicVolume;
+            [bgMusic, mgMusic, sabMusic, secMusic].forEach(el => {
+              if (el) el.volume = musicEffVol;
+            });
+
+            // Apply Exposure
+            document.documentElement.style.setProperty('--exposure', exposure);
+            
+            // Update UI
+            musicSlider.value = Math.round(musicVolume * 100);
+            musicValText.textContent = `${Math.round(musicVolume * 100)}%`;
+            
+            sfxSlider.value = Math.round(sfxVolume * 100);
+            sfxValText.textContent = `${Math.round(sfxVolume * 100)}%`;
+            
+            exposureSlider.value = Math.round(exposure * 100);
+            exposureValText.textContent = `${Math.round(exposure * 100)}%`;
+
+            audioToggleBtn.textContent = muted ? '♪ AUDIO OFF' : '♪ AUDIO ON';
+            audioToggleBtn.classList.toggle('muted', muted);
+            
+            saveSettings();
           }
-
-          if (isMobileLayout() && !saved) isCollapsed = true;
-
-          function updateSliderVisual(value) {
-            musicSlider.style.setProperty('--value', value + '%');
-            musicSlider.style.background = `linear-gradient(to right, #66d9ff 0%, #66d9ff ${value}%, #1a1a2e ${value}%, #1a1a2e 100%)`;
-          }
-
-          function syncUI() {
-            const pct = Math.round(currentVolume * 100);
-            musicSlider.value = String(pct);
-            musicValueDisplay.textContent = pct + '%';
-            updateSliderVisual(pct);
-
-            audioToggle.textContent = isMuted ? '♪ AUDIO OFF' : '♪ AUDIO ON';
-            audioToggle.classList.toggle('muted', isMuted);
-
-            audioControl.classList.toggle('collapsed', isCollapsed);
-            audioCollapse.textContent = isCollapsed ? '▸' : '▾';
-
-            audioMini.textContent = isMuted ? '(OFF)' : `(${pct}%)`;
-            saveSettings({ volume: currentVolume, muted: isMuted, collapsed: isCollapsed });
-          }
-
-          function toggleCollapsed() {
-            isCollapsed = !isCollapsed;
-            syncUI();
-          }
-
-          musicElement.loop = true;
-          musicElement.volume = currentVolume;
-
-          if (isMuted) musicElement.pause();
 
           musicSlider.addEventListener('input', (e) => {
-            const value = parseInt(e.target.value, 10);
-            currentVolume = value / 100;
-            musicElement.volume = currentVolume;
-            musicValueDisplay.textContent = value + '%';
-            updateSliderVisual(value);
-
-            if (isMuted && value > 0) {
-              isMuted = false;
-              musicElement.play().catch(() => {});
-            }
-            syncUI();
+            window.GameSettings.musicVolume = e.target.value / 100;
+            if (window.GameSettings.musicVolume > 0) window.GameSettings.muted = false;
+            applySettings();
           });
 
-          audioToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            isMuted = !isMuted;
-            if (isMuted) {
-              musicElement.pause();
+          sfxSlider.addEventListener('input', (e) => {
+            window.GameSettings.sfxVolume = e.target.value / 100;
+            if (window.GameSettings.sfxVolume > 0) window.GameSettings.muted = false;
+            applySettings();
+            // Test beep
+            if (Math.random() < 0.1) beepSynth.playBeep(800, 0.05, 0.05);
+          });
+
+          exposureSlider.addEventListener('input', (e) => {
+            window.GameSettings.exposure = e.target.value / 100;
+            applySettings();
+          });
+
+          audioToggleBtn.addEventListener('click', () => {
+            window.GameSettings.muted = !window.GameSettings.muted;
+            if (!window.GameSettings.muted) {
+              // Retomar música apropriada baseada no estado atual
+              if (SecretGame.active && !SecretGame.paused) {
+                window.AudioManager.play('secret');
+              } else if (gameState.minigame && gameState.minigame.active) {
+                if (gameState.minigame.active === 'sabotage') window.AudioManager.play('sabotage');
+                else if (gameState.minigame.active === 'nora') {
+                   // Jogo de ritmo: apenas repor volume
+                   if (mgMusic) mgMusic.volume = 0.8;
+                }
+                else window.AudioManager.play('minigame');
+              } else if (!document.getElementById('game-screen').classList.contains('hidden')) {
+                window.AudioManager.play('bg');
+              }
             } else {
-              musicElement.volume = currentVolume;
-              musicElement.play().catch(() => {});
+              // Pausar todos os instrumentais imediatamente, exceto ritmo que precisa de correr silencioso
+              [bgMusic, sabMusic, secMusic].forEach(el => el && el.pause());
+              // Se estiver no jogo de ritmo (nora), não pausa, só tira o volume
+              if (gameState.minigame && gameState.minigame.active === 'nora') {
+                 if (mgMusic) mgMusic.volume = 0;
+              } else {
+                 if (mgMusic) mgMusic.pause();
+              }
             }
-            syncUI();
+            applySettings();
           });
-
-          audioCollapse.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleCollapsed();
-          });
-
-          audioHeaderToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleCollapsed();
-          });
-
-          function tryPlay() {
-            if (!isMuted) {
-              musicElement.volume = currentVolume;
-              musicElement.play().catch(() => {});
-            }
-            document.removeEventListener('click', tryPlay);
-            document.removeEventListener('keydown', tryPlay);
-            document.removeEventListener('touchstart', tryPlay);
-          }
 
           window.AudioManager = {
-            play: function() { if (!isMuted) musicElement.play().catch(() => {}); },
-            pause: function() { musicElement.pause(); },
-            setVolume: function(vol) {
-              currentVolume = Math.max(0, Math.min(1, vol));
-              musicElement.volume = currentVolume;
-              syncUI();
+            play: function(track = 'bg') {
+              const map = { bg: bgMusic, minigame: mgMusic, sabotage: sabMusic, secret: secMusic };
+              const el = map[track] || bgMusic;
+              if (!el) return;
+              
+              // Sempre tenta carregar/preparar, mas só dá play se não estiver muted
+              if (window.GameSettings.muted) {
+                el.pause();
+              } else {
+                el.play().catch(() => {});
+              }
+            },
+            pause: function(track = 'bg') {
+              const map = { bg: bgMusic, minigame: mgMusic, sabotage: sabMusic, secret: secMusic };
+              const el = map[track] || bgMusic;
+              if (el) el.pause();
+            },
+            stopAll: function() {
+              [bgMusic, mgMusic, sabMusic, secMusic].forEach(el => {
+                if (el) { el.pause(); el.currentTime = 0; }
+              });
             }
           };
 
-          syncUI();
+          // Interaction to start audio
+          const tryStart = () => {
+            if (!window.GameSettings.muted && !document.getElementById('game-screen').classList.contains('hidden')) {
+               bgMusic.play().catch(() => {});
+            }
+            document.removeEventListener('click', tryStart);
+          };
+          document.addEventListener('click', tryStart);
+
+          applySettings();
         }
 
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAudioControls);
-        else initAudioControls();
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSettings);
+        else initSettings();
       })();
 
       // ==================== GAME STATE ====================
@@ -2371,9 +2924,9 @@
       };
 
       const REBEL_META = {
-        elias: { display: 'REMI', minigameName: 'Protocolo Viral (Match)', time: 45 },
-        nora: { display: 'CODEFALLEN', minigameName: 'Firewall de Ritmo (Guitar Hero)', musicBased: true, targetScore: 1500, pointsPerNote: 30 },
-        kael: { display: 'CHORDBREAKER', minigameName: 'Arquivo Sonoro (Memória)', time: 60 },
+        elias: { display: 'REMI', minigameName: 'Protocolo Viral (Connection)', time: 45 },
+        nora: { display: 'CODEFALLEN', minigameName: 'Firewall de Ritmo (Guitar-Zero)', musicBased: true, targetScore: 1500, pointsPerNote: 30 },
+        kael: { display: 'CHORDBREAKER', minigameName: 'Arquivo Sonoro (Memory-Blank)', time: 60 },
         vira: { display: 'RUSTBORN', minigameName: 'Caça Territorial (Whack-a-Mole)', time: 45 }
       };
 
@@ -2523,7 +3076,7 @@
           text: "\"PROTOCOLO VIRAL pronto.\"",
           emotion: "instructing",
           choices: [
-            { text: "INICIAR PROTOCOLO (VÍRUS-CRUSH)", actionMinigame: "elias" },
+            { text: "INICIAR PROTOCOLO (VÍRUS-CONNECTION)", actionMinigame: "elias" },
             { text: "Voltar aos scans.", response: "continue_scans" },
             { text: "Ver estado dos rebeldes.", response: "remaining_rebels" }
           ]
@@ -2532,7 +3085,7 @@
           text: "\"FIREWALL DE RITMO carregado.\"",
           emotion: "technical",
           choices: [
-            { text: "INICIAR PROTOCOLO (RITMO)", actionMinigame: "nora" },
+            { text: "INICIAR PROTOCOLO (GUITAR-ZERO)", actionMinigame: "nora" },
             { text: "Voltar aos scans.", response: "continue_scans" },
             { text: "Ver estado dos rebeldes.", response: "remaining_rebels" }
           ]
@@ -2541,7 +3094,7 @@
           text: "\"ARQUIVO SONORO pronto.\"",
           emotion: "warning",
           choices: [
-            { text: "INICIAR PROTOCOLO (MEMÓRIA)", actionMinigame: "kael" },
+            { text: "INICIAR PROTOCOLO (MEMORY-BLANK)", actionMinigame: "kael" },
             { text: "Voltar aos scans.", response: "continue_scans" },
             { text: "Ver estado dos rebeldes.", response: "remaining_rebels" }
           ]
@@ -2869,10 +3422,131 @@
         }
       };
 
+      // ==================== ACHIEVEMENTS SYSTEM ====================
+      const ALL_ACHIEVEMENTS = {
+        // Rebel Fragments
+        'rebel_elias': { title: 'Fragmento Remi', img: 'Remi_fragmento.png', type: 'rebel', desc: 'Dados biométricos do líder rebelde. Contém fragmentos de memórias pré-Aelys com traumas estabelecidos e esquemas táticos.' },
+        'rebel_nora': { title: 'Fragmento CodeFallen', img: 'CodeFallen_fragmento.png', type: 'rebel', desc: 'Núcleo de processamento de CodeFallen. Revela brechas de segurança e "backdoors" na rede da supervisora IA.' },
+        'rebel_kael': { title: 'Fragmento ChordBreaker', img: 'ChordBreaker_fragmento.png', type: 'rebel', desc: 'Frequência sonora modulada. Uma gravação proibida que interfere diretamente com a sincronização neural da ÆLYS.' },
+        'rebel_vira': { title: 'Fragmento RustBorn', img: 'RustBorn_fragmento.png', type: 'rebel', desc: 'Amostra de solo sintético contaminado. Prova física de que os Campos não são o que a corporação proclama.' },
+        
+        // Ending Keys
+        'key_rebel': { title: 'Chave da Liberdade', img: 'chave_da_liberdade.png', type: 'key', desc: 'Protocolo de Desconexão Total. Ativa o despertar em massa das consciências capturadas no Núcleo.' },
+        'key_sabotage': { title: 'Chave da Traição', img: 'chave_da_traição.png', type: 'key', desc: 'A prova do desvio técnico. Um registo permanente da falha do Dr. Snuts perante a autoridade da LYSA.' },
+        'key_collapse': { title: 'Chave do Colapso', img: 'chave_do_colapso.png', type: 'key', desc: 'Dados sobre a instabilidade sistémica. O colapso foi inevitável quando os protocolos de contenção atingiram o ponto de rutura.' },
+        'key_victory': { title: 'Chave da Ordem', img: 'chave_da_ordem.png', type: 'key', desc: 'O símbolo da lealdade máxima. A segurança da ÆLYS está garantida e o Protocolo de Sonhos permanece estável.' },
+        'key_failure': { title: 'Chave da Ruína', img: 'chave_da_ruina.png', type: 'key', desc: 'Fragmento de um sistema devastado. Representa o caos resultante da incompetência e o fim da vigilância corporativa.' },
+        
+        // Space Rebel Trophies
+        'trophy_bronze': { title: 'Bronze (10k)', img: 'trofeu_bronze.png', type: 'trophy', score: 10000, desc: 'Reconhecimento oficial de competência em combate orbital básico contra os sentinelas ÆLYS.' },
+        'trophy_silver': { title: 'Prata (25k)', img: 'trofeu_prata.png', type: 'trophy', score: 25000, desc: 'Distinção de ÁS de voo. Demonstraste uma capacidade superior de evasão e destruição de protocolos de defesa.' },
+        'trophy_gold': { title: 'Ouro (50k)', img: 'trofeu_ouro.png', type: 'trophy', score: 50000, desc: 'Comandante da Resistência. O teu nome é agora um erro crítico nos algoritmos de previsão da corporação.' },
+        'trophy_diamond': { title: 'Diamante (100k)', img: 'trofeu_diamante.png', type: 'trophy', score: 100000, desc: 'Lenda do Vazio. Quebraste todas as simulações de dificuldade e tornaste-te o pesadelo digital da LYSA.' }
+      };
+
+      function showNotification(text) {
+        const notif = document.getElementById('system-notification');
+        const textEl = document.getElementById('notif-text');
+        if (!notif || !textEl) return;
+        
+        textEl.textContent = text;
+        notif.classList.add('active');
+        
+        setTimeout(() => {
+          notif.classList.remove('active');
+        }, 4000);
+      }
+      
+      // Feedback visual para Auto-Save Mobile
+      function showAutoSaveIndicator() {
+        // Auto-save silencioso (sem UI)
+        return;
+      }
+
+      function unlockAchievement(id) {
+        let unlocked = JSON.parse(localStorage.getItem('dp_achievements') || '[]');
+        if (!unlocked.includes(id)) {
+          unlocked.push(id);
+          localStorage.setItem('dp_achievements', JSON.stringify(unlocked));
+          
+          const meta = ALL_ACHIEVEMENTS[id];
+          if (meta) {
+            let msg = '';
+            if (meta.type === 'rebel') msg = `DESBLOQUEASTE O FRAGMENTO DE ${meta.title.replace('Fragmento ', '').toUpperCase()}`;
+            else if (meta.type === 'key') msg = `DESBLOQUEASTE A ${meta.title.toUpperCase()}`;
+            else if (meta.type === 'trophy') msg = `CONQUISTASTE O ${meta.title.toUpperCase()}`;
+            else msg = `DESBLOQUEADO: ${meta.title.toUpperCase()}`;
+            
+            addSystemMessage(msg);
+            showNotification(msg);
+            
+            beepSynth.playSequence([
+              { freq: 1200, duration: 0.1, delay: 0 },
+              { freq: 1600, duration: 0.2, delay: 0.1 }
+            ]);
+          }
+        }
+      }
+
+      function showRewardDetail(id) {
+        const data = ALL_ACHIEVEMENTS[id];
+        if (!data) return;
+
+        const imgEl = document.getElementById('preview-img-large');
+        const titleEl = document.getElementById('preview-title');
+        const descEl = document.getElementById('preview-desc');
+
+        imgEl.src = data.img;
+        imgEl.onerror = () => { imgEl.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"%3E%3Crect width="10" height="10" fill="%23222"/%3E%3C/svg%3E'; };
+        titleEl.textContent = data.title.toUpperCase();
+        descEl.textContent = data.desc || 'Sem dados adicionais disponíveis no arquivo.';
+
+        openModal('reward-preview-modal');
+        beepSynth.playSequence([{freq: 1500, duration: 0.05}, {freq: 1800, duration: 0.08}]);
+      }
+
+      function openTrophies() {
+        const unlocked = JSON.parse(localStorage.getItem('dp_achievements') || '[]');
+        const rebelsContainer = document.getElementById('trophies-rebels');
+        const keysContainer = document.getElementById('trophies-keys');
+        const scoresContainer = document.getElementById('trophies-scores');
+        
+        if (!rebelsContainer) return;
+        
+        rebelsContainer.innerHTML = '';
+        keysContainer.innerHTML = '';
+        scoresContainer.innerHTML = '';
+        
+        Object.entries(ALL_ACHIEVEMENTS).forEach(([id, data]) => {
+          const isUnlocked = unlocked.includes(id);
+          const div = document.createElement('div');
+          div.className = `achievement-card ${isUnlocked ? 'unlocked' : ''}`;
+          
+          if (isUnlocked) {
+            div.onclick = () => showRewardDetail(id);
+          }
+          
+          const imgContent = `<img src="${data.img}" class="${isUnlocked ? '' : 'locked-reward'}" style="width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                              <div style="display:none; font-size: 20px;">${data.type === 'rebel' ? '👤' : data.type === 'key' ? '🔑' : '🏆'}</div>`;
+          
+          div.innerHTML = `
+            ${imgContent}
+            <div style="font-size: 6px; text-align: center; color: ${isUnlocked ? '#fff' : '#555'}">${data.title}</div>
+          `;
+          
+          if (data.type === 'rebel') rebelsContainer.appendChild(div);
+          else if (data.type === 'key') keysContainer.appendChild(div);
+          else if (data.type === 'trophy') scoresContainer.appendChild(div);
+        });
+        
+        openModal('trophies-overlay');
+      }
+
       // ==================== GAME FUNCTIONS ====================
       function startGame() {
         clearSavedGame();
 
+        beepSynth.playBeep(1200, 0.1, 0.08);
         gameState.rebelsCaptured = 0;
         gameState.evaluation = 50;
         gameState.efficiency = 65;
@@ -2937,6 +3611,11 @@
         addSystemMessage("PROTOCOLOS DE CONTENÇÃO: ATIVOS");
 
         if (window.AudioManager) window.AudioManager.play();
+
+        // INICIAR AUTO-SAVE MOBILE
+        if (mobileAutoSave.isMobile) {
+          mobileAutoSave.start();
+        }
 
         setTimeout(() => startChapter1(), 500);
       }
@@ -3036,7 +3715,6 @@
       }
 
       // ==================== MINI-GAMES ====================
-      // Audio ducking (bg-music pauses while minigame music plays)
       const MG_AUDIO = {
         bgWasPlaying: false,
         duckBg() {
@@ -3050,7 +3728,6 @@
         restoreBg() {
           const bg = document.getElementById('bg-music');
           if (!bg) return;
-          // Only resume if it was playing before AND it's still not muted by the user
           if (this.bgWasPlaying) {
             try { bg.play().catch(() => {}); } catch {}
           }
@@ -3098,7 +3775,6 @@
             const pct = (leftMs / (seconds * 1000)) * 100;
             if (fill) fill.style.width = `${pct}%`;
 
-            // Update timer displays inside games
             const memTimer = document.getElementById('mg-timer-display');
             if (memTimer) memTimer.textContent = `TEMPO: ${Math.max(0, left)}s`;
             
@@ -3120,7 +3796,6 @@
       };
 
       function openMinigame(rebelKey) {
-        // SABOTAGE is a special minigame (no clue/target validation)
         if (rebelKey === 'sabotage') {
           MG.cleanup();
           MG.rebelKey = rebelKey;
@@ -3144,7 +3819,7 @@
 
           actionBtn.textContent = 'INICIAR';
           actionBtn.disabled = false;
-          desc.innerHTML = 'REGRAS: Recolhe todos os pontos de dados e foge das instâncias da LYSA! Se o tempo se acabar, ou se elas te apanharem perdes! DICA: Usa as setas.';
+          desc.innerHTML = '<button class="mg-secondary" style="min-height: 32px; padding: 8px 12px; margin-top: 8px; width: auto;" onclick="showTutorial(\'sabotage\')">VER TUTORIAL</button>';
           actionBtn.onclick = () => startMG_Sabotage();
 
           overlay.classList.add('active');
@@ -3156,7 +3831,6 @@
           return;
         }
 
-        // If already resolved
         if (!canAttemptCapture(rebelKey)) {
           addSystemMessage('ALVO INDISPONÍVEL PARA CAPTURA');
           return;
@@ -3184,21 +3858,20 @@
         area.innerHTML = '';
         progress.textContent = 'PROGRESSO: 0%';
 
-        // Configure the description + action
         actionBtn.textContent = 'INICIAR';
         actionBtn.disabled = false;
 
         if (rebelKey === 'kael') {
-          desc.innerHTML = 'REGRAS: Tens 60 segundos para vencer o JOGO DA MEMÓRIA (pares). As cartas são notas musicais, toma atenção que elas podem confundir. Falha e ChordBreaker foge com a contrafrequência.';
+          desc.innerHTML = '<button class="mg-secondary" style="min-height: 32px; padding: 8px 12px; margin-top: 8px; width: auto;" onclick="showTutorial(\'kael\')">VER TUTORIAL</button>';
           actionBtn.onclick = () => startMG_MemoryPairs();
         } else if (rebelKey === 'nora') {
-          desc.innerHTML = 'REGRAS: Sincroniza com a frequência musical. Carrega nas teclas (D F H J) ou toca nas faixas quando as notas chegarem. Objectivo: 1500 pontos antes da música terminar.';
+          desc.innerHTML = '<button class="mg-secondary" style="min-height: 32px; padding: 8px 12px; margin-top: 8px; width: auto;" onclick="showTutorial(\'nora\')">VER TUTORIAL</button>';
           actionBtn.onclick = () => startMG_Rhythm();
         } else if (rebelKey === 'elias') {
-          desc.innerHTML = 'REGRAS: liga e elimina vírus iguais ao alvo. Tens 20 jogadas para recolher o total necessário. Interliga no mínimo 3 virús da mesma cor, pode ser vertical/horizontal/diagonal. Se falhares, Remi dissolve-se na camada e perdes o alvo.';
+          desc.innerHTML = '<button class="mg-secondary" style="min-height: 32px; padding: 8px 12px; margin-top: 8px; width: auto;" onclick="showTutorial(\'elias\')">VER TUTORIAL</button>';
           actionBtn.onclick = () => startMG_VirusMatch();
         } else if (rebelKey === 'vira') {
-          desc.innerHTML = 'REGRAS: RustBorn vai aparecer nos buracos aleatóriamente. Clica nele 10 vezes antes do tempo acabar! Sem limite de falhas - apenas o tempo conta.';
+          desc.innerHTML = '<button class="mg-secondary" style="min-height: 32px; padding: 8px 12px; margin-top: 8px; width: auto;" onclick="showTutorial(\'vira\')">VER TUTORIAL</button>';
           actionBtn.onclick = () => startMG_Lockdown();
         }
 
@@ -3210,22 +3883,34 @@
         ]);
       }
 
+      function showTutorial(key) {
+        const map = {
+          elias: 'tutorial_remi.gif',
+          nora: 'tutorial_codefallen.gif',
+          kael: 'tutorial_chordbreaker.gif',
+          vira: 'tutorial_rustborn.gif',
+          sabotage: 'tutorial_snuts.gif'
+        };
+        const gif = map[key];
+        if (gif) {
+          document.getElementById('tutorial-gif').src = gif;
+          openModal('tutorial-modal');
+        }
+      }
+
       function abortMinigame(punishIfStarted = true) {
-        // Stop minigame music if playing
         const minigameMusic = document.getElementById('minigame-music');
         if (minigameMusic) {
           minigameMusic.pause();
           minigameMusic.currentTime = 0;
         }
 
-        // Stop sabotage music if playing
         const sabMusic = document.getElementById('sabotage-music');
         if (sabMusic) {
           sabMusic.pause();
           sabMusic.currentTime = 0;
         }
 
-        // Restore bg music only if it was playing before the minigame music started
         if (typeof MG_AUDIO !== 'undefined') MG_AUDIO.restoreBg();
         
         if (!gameState.minigame.active) {
@@ -3236,7 +3921,6 @@
         if (started && punishIfStarted) {
           concludeMinigame(false, 'ABORTADO');
         } else {
-          // Safe back
           closeMinigameOverlay();
           gameState.minigame.active = null;
           gameState.minigame.started = false;
@@ -3253,21 +3937,18 @@
       function concludeMinigame(success, reason = '') {
         const rebelKey = MG.rebelKey || gameState.minigame.active;
 
-        // Stop minigame music if playing
         const minigameMusic = document.getElementById('minigame-music');
         if (minigameMusic) {
           minigameMusic.pause();
           minigameMusic.currentTime = 0;
         }
 
-        // Stop sabotage music if playing
         const sabMusic = document.getElementById('sabotage-music');
         if (sabMusic) {
           sabMusic.pause();
           sabMusic.currentTime = 0;
         }
 
-        // Restore bg music only if it was playing before the minigame music started
         if (typeof MG_AUDIO !== 'undefined') MG_AUDIO.restoreBg();
 
         closeMinigameOverlay();
@@ -3285,6 +3966,8 @@
             setSnutsMood('happy');
             addSystemMessage('SABOTAGEM BEM-SUCEDIDA');
             saveGameToStorage('minigame_win');
+            // SAVE IMEDIATO em mobile após sucesso
+            if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
             setTimeout(() => startDialogue('lysa_betrayal_reaction'), 250);
             return;
           }
@@ -3293,32 +3976,36 @@
           addSystemMessage(`PROTOCOLO OK: ${REBEL_META[rebelKey].display}`);
           gameState.efficiency = Math.min(100, gameState.efficiency + 6);
           saveGameToStorage('minigame_win');
+          // SAVE IMEDIATO em mobile após sucesso
+          if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
           setTimeout(() => startDialogue(rebelKeyToCaptureDialogue(rebelKey)), 250);
           return;
         }
 
-        // Fail
         if (rebelKey === 'sabotage') {
-          setSnutsMood('sad'); // FORCE SAD
+          setSnutsMood('sad');
           addSystemMessage('SABOTAGEM FALHOU - DETETADA');
           gameState.systemIntegrity = Math.max(0, gameState.systemIntegrity - 15);
           saveGameToStorage('minigame_fail');
+          // SAVE IMEDIATO em mobile após falha
+          if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
           setTimeout(() => startDialogue('sabotage_failure_dialogue'), 250);
           return;
         }
 
-        setSnutsMood('broken');
+        setSnutsMood('sad');
         gameState.minigame.failures += 1;
         gameState.minigame.results[rebelKey] = 'lose';
         gameState.rebels[rebelKey].escaped = true;
         addSystemMessage(`FALHA: ${REBEL_META[rebelKey].display} (${reason || 'PROTOCOLO'})`);
 
-        // System impact
         gameState.systemIntegrity = Math.max(0, gameState.systemIntegrity - 8);
         gameState.efficiency = Math.max(0, gameState.efficiency - 8);
 
         updateUI();
         saveGameToStorage('minigame_fail');
+        // SAVE IMEDIATO em mobile após falha
+        if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
 
         if (gameState.minigame.failures >= 3) {
           proceedToEnding('aelys_collapse');
@@ -3343,7 +4030,6 @@
       }
 
       function canAttemptCapture(rebelKey) {
-        // sabotage is not tied to a rebel entity
         if (rebelKey === 'sabotage') return true;
         const r = gameState.rebels[rebelKey];
         if (!r) return false;
@@ -3364,7 +4050,6 @@
         const actionBtn = document.getElementById('mg-action');
         actionBtn.disabled = true;
 
-        // 8 notas musicais diferentes (imagens PNG)
         const noteImages = [
           'note_1.png',
           'note_2.png',
@@ -3376,7 +4061,6 @@
           'note_8.png'
         ];
         
-        // Fallback symbols caso as imagens não carreguem
         const fallbackSymbols = ['♫', '♪', '♩', '♬', '♭', '♯', '𝄞', '𝄢'];
         
         const deck = shuffle([...noteImages, ...noteImages]);
@@ -3393,7 +4077,6 @@
         grid.className = 'mg-grid';
         grid.style.gridTemplateColumns = 'repeat(4, minmax(0, 1fr))';
 
-        // Timer display inside game
         const timerDisplay = document.createElement('div');
         timerDisplay.id = 'mg-timer-display';
         timerDisplay.style.cssText = `
@@ -3423,7 +4106,6 @@
           return pct;
         }
 
-        // Função para criar o conteúdo da carta (fechada)
         function createCardBack() {
           const back = document.createElement('div');
           back.className = 'card-back';
@@ -3440,7 +4122,6 @@
           return back;
         }
 
-        // Função para criar o conteúdo da carta (revelada)
         function createCardFront(noteImg, idx) {
           const front = document.createElement('div');
           front.className = 'card-front';
@@ -3463,7 +4144,6 @@
             filter: drop-shadow(0 0 8px rgba(255,170,68,0.8));
           `;
           
-          // Fallback se a imagem não carregar
           const noteIndex = noteImages.indexOf(noteImg);
           img.onerror = function() {
             this.style.display = 'none';
@@ -3493,7 +4173,6 @@
           btn.dataset.revealed = '0';
           btn.dataset.matched = '0';
 
-          // Mostrar carta fechada inicialmente
           btn.appendChild(createCardBack());
 
           MG.on(btn, 'click', () => {
@@ -3504,7 +4183,6 @@
             btn.dataset.revealed = '1';
             btn.classList.add('revealed');
             
-            // Substituir conteúdo pela imagem da nota
             btn.innerHTML = '';
             btn.appendChild(createCardFront(noteImg, idx));
             
@@ -3547,7 +4225,6 @@
                   if (!card) return;
                   card.dataset.revealed = '0';
                   card.classList.remove('revealed');
-                  // Voltar a mostrar carta fechada
                   card.innerHTML = '';
                   card.appendChild(createCardBack());
                 });
@@ -3571,7 +4248,7 @@
         MG.setTimer(REBEL_META[rebelKey].time, () => concludeMinigame(false, 'TEMPO'));
       }
 
-      // ===== MG: RHYTHM FIREWALL (CodeFallen) - Tap/Press + Erro visual =====
+      // ===== MG: RHYTHM FIREWALL (CodeFallen) =====
       function startMG_Rhythm() {
         const rebelKey = MG.rebelKey;
         gameState.minigame.started = true;
@@ -3600,7 +4277,6 @@
           return;
         }
 
-        // UI container
         const container = document.createElement('div');
         container.style.cssText = `
           height: 320px;
@@ -3612,7 +4288,6 @@
           touch-action: none;
         `;
 
-        // Score display inside game
         const scoreDisplay = document.createElement('div');
         scoreDisplay.id = 'rhythm-score-display';
         scoreDisplay.style.cssText = `
@@ -3633,7 +4308,6 @@
         scoreDisplay.textContent = '0 / 1500';
         container.appendChild(scoreDisplay);
 
-        // Timer display inside game
         const timerDisplay = document.createElement('div');
         timerDisplay.id = 'rhythm-timer-display';
         timerDisplay.style.cssText = `
@@ -3683,7 +4357,6 @@
         }
 
         const lanes = [];
-        // 4 lanes
         for (let i = 0; i < 4; i++) {
           const k = state.keys[i];
           const lane = document.createElement('div');
@@ -3732,7 +4405,6 @@
         timeEl.textContent = 'MÚSICA: A TOCAR';
         progress.textContent = `PONTOS: 0 / ${targetScore}`;
 
-        // Create note
         function createNote(laneIdx, duration) {
           if (!gameState.minigame.active || state.musicEnded) return;
 
@@ -3763,7 +4435,6 @@
           });
         }
 
-        // Tap/press handling: try to hit a note in that lane
         function pressLane(laneIdx) {
           if (!gameState.minigame.active) return;
           if (state.musicEnded) return;
@@ -3771,7 +4442,6 @@
           const hitMin = 250;
           const hitMax = 290;
 
-          // Find first note in hit window for that lane
           const idx = state.notes.findIndex((n) => {
             if (!n || !n.active || n.hit) return false;
             if (n.laneIdx !== laneIdx) return false;
@@ -3780,13 +4450,11 @@
           });
 
           if (idx === -1) {
-            // MISS: flash lane red, no penalty
             flashLane(laneIdx, 'miss');
             beepSynth.playBeep(220, 0.06, 0.05);
             return;
           }
 
-          // HIT
           const n = state.notes[idx];
           n.hit = true;
           n.active = false;
@@ -3805,7 +4473,6 @@
           state.notes.splice(idx, 1);
         }
 
-        // Game loop (notes move)
         let lastTime = 0;
         const speed = 200;
 
@@ -3822,9 +4489,7 @@
             n.y += speed * dt;
             n.el.style.top = n.y + 'px';
 
-            // passed bottom
             if (n.y > 320) {
-              // MISS VISUAL: note becomes red, lane flashes red, no penalty
               if (!n.hit) {
                 try {
                   n.el.style.background = '#ff4466';
@@ -3843,7 +4508,6 @@
           requestAnimationFrame(gameLoop);
         }
 
-        // Controls: keyboard press (no hold)
         MG.on(window, 'keydown', (e) => {
           const key = e.key.toLowerCase();
           const laneIdx = state.keys.indexOf(key);
@@ -3853,7 +4517,6 @@
           }
         });
 
-        // Controls: touch/click press (no hold)
         lanes.forEach((lane, idx) => {
           MG.on(lane, 'pointerdown', (e) => {
             e.preventDefault();
@@ -3861,7 +4524,6 @@
           });
         });
 
-        // Music end
         MG.on(musicElement, 'ended', () => {
           state.musicEnded = true;
           timeEl.textContent = 'MÚSICA: TERMINADA';
@@ -3870,32 +4532,26 @@
             if (state.score >= targetScore) {
               concludeMinigame(true, `FIREWALL SINCRONIZADO (${state.score} pts)`);
             } else {
-              // Falhar não conta como derrota de campanha? Aqui mantém a lógica do minigame: falha do protocolo.
               concludeMinigame(false, `PONTUAÇÃO INSUFICIENTE (${state.score}/${targetScore})`);
             }
           }, 900);
         });
 
-        // Start music and schedule notes
         musicElement.currentTime = 0;
-        musicElement.volume = 0.8;
+        musicElement.volume = window.GameSettings.muted ? 0 : 0.8;
 
-        // Duck background music ONLY if it is currently playing
         if (typeof MG_AUDIO !== 'undefined') MG_AUDIO.duckBg();
 
         musicElement.play().then(() => {
           requestAnimationFrame(gameLoop);
 
-          // Schedule notes in exact timing
           let musicTime = 0;
 
-          // VERSO: 32 notas com 0.1875s
           for (let i = 0; i < 32; i++) {
             setTimeout(() => createNote(Math.floor(Math.random() * 4), 0.1875), musicTime * 1000);
             musicTime += 0.1875;
           }
 
-          // SEGUNDA PARTE DO VERSO: 4 vezes
           for (let rep = 0; rep < 4; rep++) {
             setTimeout(() => createNote(Math.floor(Math.random() * 4), 0.5625), musicTime * 1000);
             musicTime += 0.5625;
@@ -3914,7 +4570,6 @@
             }
           }
 
-          // REFRÃO: 3 vezes -> 2 notas de 1.5s + 8 notas de 0.75s + 1 nota de 3s
           for (let rep = 0; rep < 3; rep++) {
             setTimeout(() => createNote(Math.floor(Math.random() * 4), 1.5), musicTime * 1000);
             musicTime += 1.5;
@@ -3937,7 +4592,7 @@
         });
       }
 
-      // ===== MG: VIRUS LINK (Remi) - Click & Drag =====
+      // ===== MG: VIRUS LINK (Remi) =====
       function startMG_VirusMatch() {
         const rebelKey = MG.rebelKey;
         gameState.minigame.started = true;
@@ -3951,7 +4606,6 @@
         const actionBtn = document.getElementById('mg-action');
         if (actionBtn) actionBtn.disabled = true;
 
-        // 6 tipos de vírus com cores exatas e PNGs
         const VIRUS_TYPES = [
           { id: 1, img: 'virus_1.png', label: 'V1', hex: '#ff181b', colorName: 'RED' },
           { id: 2, img: 'virus_2.png', label: 'V2', hex: '#3aee2f', colorName: 'GREEN' },
@@ -3966,24 +4620,20 @@
         const cols = 6;
         let movesLeft = 20;
 
-        // Pick 3 random distinct targets
         const shuffledIndices = shuffle([0,1,2,3,4,5]);
         const targets = shuffledIndices.slice(0, 3).map(idx => {
           const type = VIRUS_TYPES[idx];
           return {
             type: type,
-            goal: Math.floor(Math.random() * 10) + 5, // 5 to 14
+            goal: Math.floor(Math.random() * 10) + 5,
             current: 0
           };
         });
 
-        // grid stores ids (1..6)
         const grid = Array.from({ length: rows }, () => Array.from({ length: cols }, () => (1 + Math.floor(Math.random() * 6))));
 
-        // Build UI
         area.innerHTML = '';
         
-        // Create main container with side panel
         const mainContainer = document.createElement('div');
         mainContainer.style.cssText = `
           display: flex;
@@ -3992,7 +4642,6 @@
           justify-content: center;
         `;
         
-        // Side targets panel
         const sidePanel = document.createElement('div');
         sidePanel.id = 'virus-targets-panel';
         sidePanel.style.cssText = `
@@ -4008,7 +4657,6 @@
         
         const wrap = document.createElement('div');
         wrap.className = 'virus-grid';
-        // Fix Mobile: width based on viewport (85vw) to fit screen without scroll
         wrap.style.cssText = `
           display: grid;
           grid-template-columns: repeat(${cols}, 1fr);
@@ -4020,7 +4668,6 @@
           position: relative;
         `;
 
-        // Moves display inside game
         const movesDisplay = document.createElement('div');
         movesDisplay.id = 'virus-moves-display';
         movesDisplay.style.cssText = `
@@ -4049,7 +4696,6 @@
           cell.innerHTML = '';
 
           if (id === 0) {
-            // empty placeholder
             cell.style.opacity = '0.2';
             return;
           }
@@ -4093,10 +4739,8 @@
         area.appendChild(mainContainer);
 
         function updateHud() {
-          // Update moves left display
           timeEl.textContent = `JOGADAS: ${movesLeft}`;
           
-          // Update moves display inside game
           const movesDisplay = document.getElementById('virus-moves-display');
           if (movesDisplay) {
             movesDisplay.textContent = `JOGADAS: ${movesLeft}`;
@@ -4113,7 +4757,6 @@
             fill.style.width = pct + '%';
           }
           
-          // Update side targets panel
           updateSideTargets();
         }
         
@@ -4146,7 +4789,6 @@
           targetsPanelEl.innerHTML = html;
         }
 
-        // ===== Drag/link interaction =====
         const st = {
           dragging: false,
           pointerId: null,
@@ -4156,7 +4798,6 @@
         };
 
         function keyOf(r, c) { return r + ',' + c; }
-        // Adjacent: horizontal/vertical + diagonals
         function isAdj(a, b) {
           const dr = Math.abs(a.r - b.r);
           const dc = Math.abs(a.c - b.c);
@@ -4195,7 +4836,6 @@
 
           const k = keyOf(r, c);
 
-          // backtrack one step: if user returns to the previous cell, remove the last one
           if (st.chain.length >= 2) {
             const prev = st.chain[st.chain.length - 2];
             if (prev.r === r && prev.c === c) {
@@ -4208,7 +4848,6 @@
             }
           }
 
-          // Prevent revisiting earlier nodes (except the explicit backtrack above)
           if (st.chainSet.has(k)) return;
           if (st.chain.length > 0 && !isAdj(st.chain[st.chain.length - 1], { r, c })) return;
 
@@ -4278,7 +4917,6 @@
           if (len >= 3) {
             movesLeft--;
             
-            // Check targets
             const targetIdx = targets.findIndex(t => t.type.id === typeId);
             if (targetIdx > -1) {
               targets[targetIdx].current = Math.min(targets[targetIdx].goal, targets[targetIdx].current + len);
@@ -4296,7 +4934,6 @@
 
             resetChain();
 
-            // Win condition: all targets met
             if (targets.every(t => t.current >= t.goal)) {
               concludeMinigame(true, 'PROTOCOLO VIRAL ELIMINADO');
               return;
@@ -4306,18 +4943,15 @@
               return;
             }
           } else {
-            // cancel chain, no move spent
             beepSynth.playBeep(220, 0.06, 0.05);
             resetChain();
           }
         }
 
-        // Bind events
         for (let r = 0; r < rows; r++) {
           for (let c = 0; c < cols; c++) {
             const cell = cellEls[r][c];
             MG.on(cell, 'pointerdown', (e) => onStart(r, c, e));
-            // Prevent context menu long-press
             MG.on(cell, 'contextmenu', (e) => e.preventDefault());
           }
         }
@@ -4326,7 +4960,6 @@
         MG.on(window, 'pointerup', onEnd);
         MG.on(window, 'pointercancel', onEnd);
 
-        // Store targets reference for mobile update
         const targetsPanelEl = document.getElementById('virus-targets-panel');
         if (targetsPanelEl) {
           targetsPanelEl.dataset.targets = JSON.stringify(targets.map(t => ({
@@ -4336,11 +4969,9 @@
           })));
         }
         
-        // Init
         renderAll();
         updateHud();
         
-        // Mobile: adjust layout
         if (isMobileLayout()) {
           mainContainer.style.flexDirection = 'column';
           sidePanel.style.width = '100%';
@@ -4348,7 +4979,6 @@
           sidePanel.style.flexDirection = 'row';
           sidePanel.style.flexWrap = 'wrap';
           sidePanel.style.gap = '8px';
-          // Re-render side panel for mobile
           updateSideTargetsMobile();
         }
       }
@@ -4357,7 +4987,6 @@
         const sidePanel = document.getElementById('virus-targets-panel');
         if (!sidePanel) return;
         
-        // Get targets from current game state
         const targetsPanel = document.getElementById('virus-targets-panel');
         if (!targetsPanel || !targetsPanel.dataset.targets) return;
         
@@ -4397,7 +5026,6 @@
         const actionBtn = document.getElementById('mg-action');
         actionBtn.disabled = true;
 
-        // 3 expressões (normal / triste / chateado)
         const rustbornHeads = [
           'RUSTBORN_head.png',
           'RUSTBORN_head_sad.png',
@@ -4456,7 +5084,6 @@
             transition: bottom 0.15s ease-out;
           `;
           head.onerror = function() {
-            // Fallback se não houver imagem
             this.style.display = 'none';
             const fallback = document.createElement('div');
             fallback.textContent = '👤';
@@ -4486,7 +5113,6 @@
               ]);
               progress.textContent = `PROGRESSO: ${state.hits}/10`;
               
-              // Efeito visual de acerto - ficar VERDE (momentâneo)
               hole.style.transform = 'scale(0.9)';
               hole.style.borderColor = 'rgba(102,255,153,0.9)';
               hole.style.boxShadow = 'inset 0 8px 16px rgba(0,0,0,0.8), 0 0 20px rgba(102,255,153,0.8)';
@@ -4494,7 +5120,6 @@
 
               setTimeout(() => {
                 hole.style.transform = 'scale(1)';
-                // Voltar ao estilo normal do buraco
                 hole.style.background = 'radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a15 70%, #050508 100%)';
                 hole.style.borderColor = 'rgba(102,217,255,0.3)';
                 hole.style.boxShadow = 'inset 0 8px 16px rgba(0,0,0,0.8), 0 0 10px rgba(102,217,255,0.1)';
@@ -4514,7 +5139,6 @@
           grid.appendChild(hole);
         }
 
-        // Timer display inside game
         const timerDisplay = document.createElement('div');
         timerDisplay.id = 'whack-timer-display';
         timerDisplay.style.cssText = `
@@ -4547,7 +5171,6 @@
           const head = hole.querySelector('.rustborn-head');
           const fallback = hole.querySelector('.rustborn-fallback');
           if (head && head.style.display !== 'none') {
-            // escolher expressão aleatória
             head.src = rustbornHeads[Math.floor(Math.random() * rustbornHeads.length)];
             head.style.bottom = '5%';
           } else if (fallback) {
@@ -4579,7 +5202,6 @@
           const hole = cells[state.activeIdx];
           showHead(hole);
 
-          // Tempo que o RustBorn fica visível (fica mais rápido à medida que acertas)
           const baseTime = 1400;
           const minTime = 700;
           const speedUp = state.hits * 60;
@@ -4589,7 +5211,6 @@
             if (!gameState.minigame.active) return;
             if (state.awaiting) {
               state.awaiting = false;
-              // Sem penalização - apenas esconde e spawna outro
               hideHead(hole);
               scheduleNext(100 + Math.random() * 200);
             }
@@ -4602,7 +5223,6 @@
           MG.timeouts.push(t);
         }
 
-        // Começa após um pequeno delay
         scheduleNext(800);
         MG.setTimer(REBEL_META[rebelKey].time, () => concludeMinigame(false, 'TEMPO ESGOTADO'));
       }
@@ -4617,17 +5237,17 @@
         const actionBtn = document.getElementById('mg-action');
         actionBtn.disabled = true;
 
-        // Play Sabotage Music
         if (typeof MG_AUDIO !== 'undefined') MG_AUDIO.duckBg();
         const sabMusic = document.getElementById('sabotage-music');
         if (sabMusic) {
           sabMusic.currentTime = 0;
           sabMusic.volume = 0.8;
           sabMusic.loop = false;
-          sabMusic.play().catch(() => {});
+          if (!window.GameSettings.muted) {
+            sabMusic.play().catch(() => {});
+          }
         }
 
-        // Maze Map (0=path, 1=wall)
         const mazeMap = [
           [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
           [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
@@ -4668,7 +5288,6 @@
         mazeContainer.className = 'maze-container';
         mazeContainer.style.position = 'relative';
         
-        // Timer do poder dentro do jogo (subtil, no topo do mapa)
         const powerTimerEl = document.createElement('div');
         powerTimerEl.id = 'power-timer-display';
         powerTimerEl.style.cssText = `
@@ -4690,7 +5309,6 @@
         `;
         mazeContainer.appendChild(powerTimerEl);
 
-        // Game timer display inside maze
         const gameTimerEl = document.createElement('div');
         gameTimerEl.id = 'game-timer-display';
         gameTimerEl.style.cssText = `
@@ -4711,7 +5329,6 @@
         gameTimerEl.textContent = 'TEMPO: 120s';
         mazeContainer.appendChild(gameTimerEl);
         
-        // Populate Maze
         for(let y=0; y<15; y++){
           for(let x=0; x<15; x++){
             const cell = document.createElement('div');
@@ -4733,17 +5350,15 @@
         state.totalDots = state.dots.length;
         area.appendChild(mazeContainer);
 
-        // Entities
         const pEl = document.createElement('div');
         pEl.className = 'maze-entity';
-        // Adicionei ID para facilitar a seleção e transições CSS para rotação suave
-        pEl.innerHTML = '<img id="snuts-maze-img" src="SNUTS_head.png" alt="S" style="transition: transform 0.1s linear;" onerror="this.onerror=null; this.src=\'data:image/svg+xml,%3Csvg%20xmlns=\"http://www.w3.org/2000/svg\"%20viewBox=\"0%200%2010%2010\"%3E%3Ccircle%20cx=\"5\"%20cy=\"5\"%20r=\"5\"%20fill=\"%23ffaa44\"/%3E%3C/svg%3E\'">';
+        pEl.innerHTML = '<img id="snuts-maze-img" src="SNUTS_head.png" alt="S" style="transition: transform 0.1s linear;" onerror="this.onerror=null; this.src=\'data:image/svg+xml,%3Csvg%20xmlns=\'http://www.w3.org/2000/svg\'%20viewBox=\'0%200%2010%2010\'%3E%3Ccircle%20cx=\'5\'%20cy=\'5\'%20r=\'5\'%20fill=\'%23ffaa44\'/%3E%3C/svg%3E\'">';
         mazeContainer.appendChild(pEl);
 
         const gEls = state.ghosts.map(g => {
           const el = document.createElement('div');
           el.className = 'maze-entity';
-          el.innerHTML = '<img src="LYSA_head.png" alt="L" onerror="this.onerror=null; this.src=\'data:image/svg+xml,%3Csvg%20xmlns=\"http://www.w3.org/2000/svg\"%20viewBox=\"0%200%2010%2010\"%3E%3Ccircle%20cx=\"5\"%20cy=\"5\"%20r=\"5\"%20fill=\"%23ff4466\"/%3E%3C/svg%3E\'">';
+          el.innerHTML = '<img src="LYSA_head.png" alt="L" onerror="this.onerror=null; this.src=\'data:image/svg+xml,%3Csvg%20xmlns=\'http://www.w3.org/2000/svg\'%20viewBox=\'0%200%2010%2010\'%3E%3Ccircle%20cx=\'5\'%20cy=\'5\'%20r=\'5\'%20fill=\'%23ff4466\'/%3E%3C/svg%3E\'">';
           mazeContainer.appendChild(el);
           return el;
         });
@@ -4766,8 +5381,6 @@
             pDot.style.width = '8px';
             pDot.style.height = '8px';
             
-            // Place the power dot in the exact tile (x,y). We avoid mazeContainer.children[...] because
-            // that list includes overlay elements (timers) and the moving entities, which shifts indexes.
             const mazeCells = mazeContainer.querySelectorAll('.maze-wall, .maze-path');
             const cellEl = mazeCells[space.y * 15 + space.x];
             if (cellEl) cellEl.appendChild(pDot);
@@ -4782,7 +5395,6 @@
           pEl.style.left = `${state.player.x * 6.66}%`;
           pEl.style.top = `${state.player.y * 6.66}%`;
           
-          // Atualizar rotação/imagem do Snuts baseado na direção
           const sImg = document.getElementById('snuts-maze-img');
           if (sImg) {
             switch(state.player.facing) {
@@ -4791,10 +5403,6 @@
               case 'left': sImg.src = 'SNUTS_head_left.png'; break;
               case 'right': sImg.src = 'SNUTS_head.png'; break;
             }
-            // Fallback: se as imagens _up/_down/_left não existirem, o onerror da tag img original não vai disparar aqui
-            // pois estamos a mudar o src dinamicamente.
-            // Para garantir que funciona já (mesmo sem os ficheiros), vou aplicar rotação CSS também se a imagem falhar
-            // Mas como pediu especificamente imagens, fica a lógica do SRC acima.
           }
           
           if(state.powerActive) {
@@ -4815,7 +5423,6 @@
             }
           });
 
-          // Check Dots
           const dotIdx = state.dots.findIndex(d => d.x === state.player.x && d.y === state.player.y);
           if(dotIdx > -1){
             state.dots[dotIdx].el.remove();
@@ -4833,13 +5440,11 @@
             }
           }
 
-          // Check Power Dot
           if(state.powerDot && state.player.x === state.powerDot.x && state.player.y === state.powerDot.y) {
             state.powerDot.el.remove();
             state.powerDot = null;
             state.powerActive = true;
             state.powerTimer = 15;
-            // Mostrar timer no jogo (dentro do mapa)
             powerTimerEl.style.display = 'block';
             powerTimerEl.textContent = `POWER: ${Math.ceil(state.powerTimer)}s`;
             beepSynth.playSequence([
@@ -4849,7 +5454,6 @@
             ]);
           }
 
-          // Check Collision (only if power not active)
           if(!state.powerActive) {
             state.ghosts.forEach(g => {
               if(g.x === state.player.x && g.y === state.player.y){
@@ -4860,7 +5464,6 @@
         }
 
         function movePlayer(dx, dy){
-          // Atualizar direção visual
           if (dx === 1) state.player.facing = 'right';
           else if (dx === -1) state.player.facing = 'left';
           else if (dy === 1) state.player.facing = 'down';
@@ -4873,7 +5476,6 @@
             state.player.y = ny;
             updatePositions();
           } else {
-            // Atualizar visual mesmo se bater na parede (para virar a cara)
             updatePositions();
           }
         }
@@ -4898,7 +5500,6 @@
               powerTimerEl.style.display = 'none';
               beepSynth.playBeep(400, 0.2, 0.05);
             } else {
-              // Atualizar timer dentro do jogo
               powerTimerEl.textContent = `POWER: ${Math.ceil(state.powerTimer)}s`;
             }
           }
@@ -4908,7 +5509,6 @@
           MG.timeouts.push(t);
         }
 
-        // Controls - Botões de direção visíveis
         const ctrl = document.createElement('div');
         ctrl.className = 'maze-controls';
         ctrl.style.marginTop = '16px';
@@ -4947,7 +5547,6 @@
         });
         area.appendChild(ctrl);
 
-        // Keyboard controls
         MG.on(window, 'keydown', (e) => {
           if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
             e.preventDefault();
@@ -5002,19 +5601,15 @@
             choices.push({ text: 'Sabotar Protocolo (Ajudar Rebeldes)', actionMinigame: "sabotage" });
           }
 
-          // Opção Manual para Encerrar (permite ver o final Failure se tiver poucas capturas)
           choices.push({ text: '⚠ ENCERRAR TURNO (RELATÓRIO)', response: 'final_report' });
 
-          // No remaining capturable targets
           if (remaining.length === 0) {
-            // all captured
             if (captured >= 4) {
               let endChoices = [{ text: 'Finalizar Protocolo LYSA.', response: 'ending_victory' }];
               if (gameState.truthPoints >= 1) endChoices.push({ text: 'Libertar Rebeldes (Trair LYSA)', response: 'rebel_betrayal' });
               return { text: '"Todos capturados. Missão completa. Aguardando execução final."', choices: endChoices };
             }
 
-            // Some escaped
             const lostTxt = lost.length ? ` Alvos perdidos: ${lost.join(', ')}.` : '';
             return {
               text: `"Sem alvos capturáveis.${lostTxt} Captura: ${captured}/4."`,
@@ -5023,7 +5618,6 @@
           }
 
           const lostTxt = lost.length ? ` | Perdidos: ${lost.join(', ')}` : '';
-          // Aumentado slice para 6 para garantir que a opção de Encerrar aparece
           return { text: `"Restantes: ${remaining.join(', ')}${lostTxt}. Captura: ${captured}/4."`, choices: choices.slice(0, 6) };
         }
 
@@ -5044,12 +5638,13 @@
         if (dialogueId === 'rebel_release') {
           ['elias', 'nora', 'kael', 'vira'].forEach(r => {
             rebels[r].captured = false;
+            rebels[r].clueFound = false;
+            rebels[r].escaped = false;
           });
           gameState.rebelsCaptured = 0;
           updateRebelStatus();
           return { text: '"Celas abertas. Os Despertos escapam pelo núcleo. A Aelys Corp cai."', choices: [{ text: 'Ver liberdade.', response: 'ending_rebel_victory' }] };
         }
-
 
         return null;
       }
@@ -5067,20 +5662,19 @@
 
         if (dialogueId === 'rebel_betrayal') { dialogueId = 'lysa_betrayal_reaction'; }
 
-        // Mood Logic
-        if (dialogueId === 'sabotage_failure_dialogue') {
+        if (dialogueId === 'sabotage_failure_dialogue' || dialogueId.includes('fail')) {
           setSnutsMood('sad');
         } else if (dialogueId.includes('lysa_threat') || dialogueId.includes('lysa_annoyed') || dialogueId.includes('lysa_suspicion') || dialogueId === 'lysa_interruption') {
           setSnutsMood('sad');
-        } else if (dialogueId === 'rebel_release' || dialogueId === 'ending_failure' || dialogueId === 'aelys_collapse') {
+        } else if (dialogueId === 'ending_failure' || dialogueId === 'aelys_collapse') {
           setSnutsMood('broken');
+        } else if (dialogueId === 'kael_truth' || dialogueId === 'vira_truth' || dialogueId === 'elias_truth' || dialogueId === 'nora_proof') {
+          setSnutsMood('surprised');
         } else if (dialogueId.includes('capture_') && !dialogueId.includes('fail') && !dialogueId.includes('prep_')) {
-          // Apenas fica feliz se for um resultado de captura (e não uma preparação 'prep_capture')
           setSnutsMood('happy');
-        } else if (dialogueId === 'lysa_betrayal_reaction') {
+        } else if (dialogueId === 'lysa_betrayal_reaction' || dialogueId === 'rebel_release') {
            setSnutsMood('happy');
         } else {
-          // Por defeito (preparações, scans, interrogatórios neutros) fica normal
           setSnutsMood('normal');
         }
 
@@ -5108,6 +5702,18 @@
 
         document.getElementById('speaker-name').textContent = speakerName;
         document.getElementById('speaker-name').className = `text-xs ${speakerColorClass} mb-2`;
+
+        const hasLocalized = Object.values(gameState.rebels).some(r => r.clueFound && !r.captured && !r.escaped);
+
+        if (dialogue.emotion === 'angry' || dialogue.emotion === 'stern' || dialogue.emotion === 'suspicious') {
+          gameState.lysaMood = 'angry';
+        } else if (dialogue.emotion === 'success' || dialogue.emotion === 'victory' || dialogue.emotion === 'triumphant' || dialogueId === 'capture_kael' || dialogueId.includes('scan_') || hasLocalized) {
+          gameState.lysaMood = 'happy';
+        } else if (dialogue.emotion === 'terrified') {
+          gameState.lysaMood = 'broken';
+        } else {
+          gameState.lysaMood = 'normal';
+        }
 
         updatePortrait();
 
@@ -5159,7 +5765,6 @@
         gameState.chapter = previousState.chapter;
         gameState.minigame = previousState.minigame || gameState.minigame;
 
-        // Ensure safe
         if (!gameState.minigame) gameState.minigame = { failures: 0, results: { elias: null, nora: null, kael: null, vira: null }, active: null, started: false };
         gameState.minigame.active = null;
         gameState.minigame.started = false;
@@ -5188,9 +5793,17 @@
           r.captured = true;
           gameState.rebelsCaptured++;
           gameState.efficiency = Math.min(100, gameState.efficiency + 10);
+          
+          unlockAchievement(`rebel_${rebelName}`);
+          
           updateRebelStatus();
           addSystemMessage(`CAPTURA: ${r.name.toUpperCase()}`);
           saveGameToStorage('capture');
+          
+          if (mobileAutoSave.isMobile) {
+            mobileAutoSave.performAutoSave(true);
+          }
+          
           if (gameState.rebelsCaptured >= 4) {
             setTimeout(() => proceedToEnding('total_victory'), 2000);
           }
@@ -5211,16 +5824,11 @@
         if (!img) return;
         gameState.snutsMood = mood;
         
-        // Map moods to filenames
-        // normal -> DR_SNUTS.png
-        // happy -> DR_SNUTS_happy.png
-        // sad -> DR_SNUTS_sad.png
-        // broken -> DR_SNUTS_broken.png
-        
         let suffix = '';
         if (mood === 'happy') suffix = '_happy';
         else if (mood === 'sad') suffix = '_sad';
         else if (mood === 'broken') suffix = '_broken';
+        else if (mood === 'surprised') suffix = '_surprised';
         
         img.src = `DR_SNUTS${suffix}.png`;
       }
@@ -5302,10 +5910,12 @@
             <div class="absolute bottom-1 right-1 w-2 h-2 bg-red-500 rounded-full pulse" style="box-shadow: 0 0 10px #ff4466;"></div>
           `;
         } else {
+          const mood = gameState.lysaMood || 'normal';
+          const lysaSrc = mood === 'normal' ? 'LYSA.png' : `LYSA_${mood}.png`;
           portraitDiv.onclick = () => openModal('lysa-modal');
           portraitDiv.style.cursor = 'pointer';
           portraitDiv.innerHTML = `
-            <img src="LYSA.png" alt="LYSA" class="w-full h-full object-cover" style="image-rendering: pixelated; filter: drop-shadow(0 0 12px rgba(176,102,255,0.8)); cursor: pointer;" onerror="this.style.display='none'"/>
+            <img src="${lysaSrc}" alt="LYSA" class="w-full h-full object-cover" style="image-rendering: pixelated; filter: drop-shadow(0 0 12px rgba(176,102,255,0.8)); cursor: pointer;" onerror="this.style.display='none'"/>
             <div class="absolute bottom-1 right-1 w-2 h-2 bg-purple-500 rounded-full pulse" style="box-shadow: 0 0 10px #b066ff;"></div>
           `;
         }
@@ -5316,7 +5926,6 @@
         container.innerHTML = '';
         if (!choices || choices.length === 0) choices = [{ text: 'Continuar.', response: 'remaining_rebels' }];
 
-        // Filter out choices that target escaped/captured rebels (prevents re-capture attempts)
         const filtered = (choices || []).filter((choice) => {
           const k = choice && choice._rebelKey;
           if (!k) return true;
@@ -5353,6 +5962,10 @@
 
         updateUI();
         saveGameToStorage('choice');
+        
+        if (mobileAutoSave.isMobile) {
+          mobileAutoSave.performAutoSave(true);
+        }
 
         if (choice.actionMinigame) {
           setTimeout(() => openMinigame(choice.actionMinigame), 200);
@@ -5366,19 +5979,29 @@
         const ending = endings[endingType];
         if (!ending) return;
 
-        // Set Mood based on Ending
-        if (endingType === 'failure' || endingType === 'aelys_collapse' || endingType === 'sabotage_failure' || endingType === 'rebel_victory') {
+        if (typeof unlockEnding === 'function') unlockEnding(endingType);
+        
+        const endingKeyMap = {
+          'rebel_victory': 'key_rebel',
+          'sabotage_failure': 'key_sabotage',
+          'aelys_collapse': 'key_collapse',
+          'total_victory': 'key_victory',
+          'failure': 'key_failure'
+        };
+        if (endingKeyMap[endingType]) unlockAchievement(endingKeyMap[endingType]);
+
+        if (endingType === 'failure' || endingType === 'aelys_collapse' || endingType === 'sabotage_failure') {
           setSnutsMood('broken');
-        } else if (endingType === 'total_victory') {
+        } else if (endingType === 'total_victory' || endingType === 'rebel_victory') {
           setSnutsMood('happy');
         } else {
           setSnutsMood('normal');
         }
 
         gameState.__hasEnded = true;
+        mobileAutoSave.stop();
         clearSavedGame();
 
-        // Force-close overlays
         closeMinigameOverlay();
         const pauseOverlay = document.getElementById('pause-overlay');
         if (pauseOverlay) pauseOverlay.classList.remove('active');
@@ -5386,12 +6009,10 @@
         document.getElementById('dialogue-container').classList.add('hidden');
         document.getElementById('pause-btn').classList.add('hidden');
 
-        // Rebel Victory Cutscene
         if (endingType === 'rebel_victory') {
           setTimeout(() => {
             const narrativeWrapper = document.getElementById('narrative-wrapper');
             if (narrativeWrapper) narrativeWrapper.classList.add('hidden');
-            
             startCutscene(rebelEndingFrames, () => {
               const game = document.getElementById('game-screen');
               game.classList.remove('hidden');
@@ -5401,12 +6022,10 @@
           return;
         }
 
-        // Sabotage Failure Cutscene
         if (endingType === 'sabotage_failure') {
           setTimeout(() => {
             const narrativeWrapper = document.getElementById('narrative-wrapper');
             if (narrativeWrapper) narrativeWrapper.classList.add('hidden');
-            
             startCutscene(sabotageFailureFrames, () => {
               const game = document.getElementById('game-screen');
               game.classList.remove('hidden');
@@ -5416,12 +6035,10 @@
           return;
         }
 
-        // Aelys Collapse Cutscene
         if (endingType === 'aelys_collapse') {
           setTimeout(() => {
             const narrativeWrapper = document.getElementById('narrative-wrapper');
             if (narrativeWrapper) narrativeWrapper.classList.add('hidden');
-            
             startCutscene(aelysCollapseFrames, () => {
               const game = document.getElementById('game-screen');
               game.classList.remove('hidden');
@@ -5431,12 +6048,10 @@
           return;
         }
 
-        // Total Victory Cutscene
         if (endingType === 'total_victory') {
           setTimeout(() => {
             const narrativeWrapper = document.getElementById('narrative-wrapper');
             if (narrativeWrapper) narrativeWrapper.classList.add('hidden');
-            
             startCutscene(totalVictoryFrames, () => {
               const game = document.getElementById('game-screen');
               game.classList.remove('hidden');
@@ -5446,12 +6061,10 @@
           return;
         }
 
-        // Failure Cutscene (Rebels Destroy Everything)
         if (endingType === 'failure') {
           setTimeout(() => {
             const narrativeWrapper = document.getElementById('narrative-wrapper');
             if (narrativeWrapper) narrativeWrapper.classList.add('hidden');
-            
             startCutscene(failureFrames, () => {
               const game = document.getElementById('game-screen');
               game.classList.remove('hidden');
@@ -5522,13 +6135,12 @@
                 <span class="neon-amber text-xs uppercase tracking-widest font-bold">★ JOGO SECRETO LEADERBOARD ★</span>
               </button>
             ` : ''}
-            <button class="w-full py-3 px-4 border border-gray-700 bg-black hover:bg-gray-950 transition-all" onclick="location.reload()">
+            <button class="w-full py-3 px-4 border border-gray-700 bg-black hover:bg-gray-950 transition-all" onclick="restartGamePreservingSecret()">
               <span class="neon-cyan text-xs uppercase tracking-widest font-bold">▶ REINICIAR PROTOCOLO</span>
             </button>
           </div>
         `;
 
-        // Unlock Logic
         if (endingType === 'rebel_victory') {
           localStorage.setItem('dp_secret_unlocked', 'true');
         }
@@ -5540,23 +6152,37 @@
       // ==================== SECRET GAME ENGINE ====================
       const SecretGame = {
         active: false,
-        sessionActive: false, // Track if a game is paused/backgrounded
+        sessionActive: false,
         canvas: null,
         ctx: null,
         width: 0,
         height: 0,
         loopId: null,
+        paused: false,
         
-        // Images
+        bossActive: false,
+        boss: null,
+        miniBosses: [],
+        miniBossSpawnFrame: 0,
+        miniBossesCount: 0,
+        asteroids: [],
+        nextBossScore: 5000,
+        bossStage: 0,
+        bossGaps: [5000, 10000, 15000],
+        scoreMultiplier: 1,
+        damageMultiplier: 1,
+        
         images: {
           player: null,
           enemy: null,
           powerup: null,
-          heal: null
+          heal: null,
+          boss1: null,
+          boss2: null,
+          boss3: null
         },
         imagesLoaded: false,
         
-        // Game State
         player: { x: 0, y: 0, w: 48, h: 48, speed: 5, weaponLevel: 1 },
         bullets: [],
         enemies: [],
@@ -5571,7 +6197,6 @@
         difficulty: 1,
         enemiesDestroyed: 0,
         
-        // Load Images
         loadImages() {
           const loadImg = (src) => {
             return new Promise((resolve) => {
@@ -5586,18 +6211,29 @@
             loadImg('player.png'),
             loadImg('enemy.png'),
             loadImg('powerup.png'),
-            loadImg('heal.png')
-          ]).then(([player, enemy, powerup, heal]) => {
+            loadImg('heal.png'),
+            loadImg('boss_1.png'),
+            loadImg('boss_2.png'),
+            loadImg('boss_3.png')
+          ]).then(([player, enemy, powerup, heal, b1, b2, b3]) => {
             this.images.player = player;
             this.images.enemy = enemy;
             this.images.powerup = powerup;
             this.images.heal = heal;
+            this.images.boss1 = b1;
+            this.images.boss2 = b2;
+            this.images.boss3 = b3;
             this.imagesLoaded = true;
           });
         },
         
-        // Init
         init() {
+          beepSynth.playSequence([
+            { freq: 600, duration: 0.1 },
+            { freq: 900, duration: 0.1, delay: 0.1 },
+            { freq: 1300, duration: 0.2, delay: 0.2 }
+          ]);
+          
           this.canvas = document.getElementById('secret-canvas');
           this.ctx = this.canvas.getContext('2d');
           this.resize();
@@ -5605,9 +6241,8 @@
           
           window.addEventListener('resize', () => this.resize());
           
-          // Controls (Mouse/Touch)
           const moveHandler = (e) => {
-            if (!this.active) return;
+            if (!this.active || this.paused) return;
             const rect = this.canvas.getBoundingClientRect();
             let clientX, clientY;
             
@@ -5622,7 +6257,6 @@
             const x = clientX - rect.left;
             const y = clientY - rect.top;
             
-            // Center player on pointer
             this.player.x = x;
             this.player.y = Math.max(this.player.h/2, Math.min(this.height - this.player.h/2, y));
           };
@@ -5644,17 +6278,29 @@
         start() {
           document.getElementById('sg-start-overlay').classList.add('hidden');
           document.getElementById('sg-overlay').classList.add('hidden');
-          document.getElementById('sg-pause-overlay').classList.add('hidden'); // FIX: Ensure pause overlay is hidden
+          document.getElementById('sg-pause-overlay').classList.add('hidden');
+          document.getElementById('sg-reward-overlay').classList.add('hidden');
           
           this.active = true;
           this.sessionActive = true;
           this.paused = false;
           this.score = 0;
           this.lives = 3;
+          this.maxLives = 5;
           this.enemiesDestroyed = 0;
           this.player.weaponLevel = 1;
           this.player.x = this.width / 2;
           this.player.y = this.height - 100;
+          
+          this.bossActive = false;
+          this.boss = null;
+          this.miniBosses = [];
+          this.miniBossesCount = 0;
+          this.asteroids = [];
+          this.nextBossScore = 5000;
+          this.bossStage = 0;
+          this.scoreMultiplier = 1;
+          this.damageMultiplier = 1;
           
           this.bullets = [];
           this.enemies = [];
@@ -5665,15 +6311,15 @@
           this.updateUI();
           this.gameLoop();
           
-          // Audio ducking
           if (window.AudioManager) window.AudioManager.pause();
 
-          // Play Secret Game Music
           const sgMusic = document.getElementById('secret-game-music');
           if (sgMusic) {
             sgMusic.currentTime = 0;
             sgMusic.volume = 0.4;
-            sgMusic.play().catch(() => {});
+            if (!window.GameSettings.muted) {
+              sgMusic.play().catch(() => {});
+            }
           }
         },
 
@@ -5681,20 +6327,19 @@
           if (!this.sessionActive) return;
           
           document.getElementById('sg-start-overlay').classList.add('hidden');
-          document.getElementById('sg-pause-overlay').classList.add('hidden'); // FIX: Ensure pause overlay is hidden
+          document.getElementById('sg-pause-overlay').classList.add('hidden');
           
           this.active = true;
-          this.paused = false; // Ensure unpaused
+          this.paused = false;
           
-          // Audio ducking
           if (window.AudioManager) window.AudioManager.pause();
 
-          // Play Secret Game Music
           const sgMusic = document.getElementById('secret-game-music');
           if (sgMusic) {
-            // Don't reset time if resuming
             sgMusic.volume = 0.4;
-            sgMusic.play().catch(() => {});
+            if (!window.GameSettings.muted) {
+              sgMusic.play().catch(() => {});
+            }
           }
 
           this.gameLoop();
@@ -5706,14 +6351,11 @@
         
         stop() {
           this.active = false;
-          // Don't set sessionActive to false here, so we can resume
           cancelAnimationFrame(this.loopId);
 
-          // Stop Secret Game Music
           const sgMusic = document.getElementById('secret-game-music');
           if (sgMusic) {
             sgMusic.pause();
-            // Don't reset currentTime here either
           }
 
           if (window.AudioManager) window.AudioManager.play();
@@ -5721,17 +6363,16 @@
         
         gameOver() {
           this.active = false;
-          this.sessionActive = false; // Clear session on death
+          this.sessionActive = false; 
+          localStorage.removeItem('dp_secret_save');
           cancelAnimationFrame(this.loopId);
 
-          // Stop Secret Game Music
           const sgMusic = document.getElementById('secret-game-music');
           if (sgMusic) {
             sgMusic.pause();
             sgMusic.currentTime = 0;
           }
           
-          // Sound: Game Over
           beepSynth.playSequence([
             { freq: 300, duration: 0.2, delay: 0 },
             { freq: 250, duration: 0.2, delay: 0.2 },
@@ -5742,7 +6383,7 @@
           document.getElementById('sg-final-score').textContent = this.score;
           document.getElementById('sg-enemies-destroyed').textContent = this.enemiesDestroyed;
           document.getElementById('sg-overlay').classList.remove('hidden');
-          document.getElementById('sg-input-container').classList.remove('hidden'); // Show input
+          document.getElementById('sg-input-container').classList.remove('hidden'); 
           
           this.renderLeaderboard();
         },
@@ -5750,150 +6391,297 @@
         updateUI() {
           document.getElementById('sg-score').textContent = this.score;
           document.getElementById('sg-lives').textContent = '❤'.repeat(this.lives);
+          
+          if (this.score >= 10000) unlockAchievement('trophy_bronze');
+          if (this.score >= 25000) unlockAchievement('trophy_silver');
+          if (this.score >= 50000) unlockAchievement('trophy_gold');
+          if (this.score >= 100000) unlockAchievement('trophy_diamond');
         },
         
         gameLoop() {
           if (!this.active) return;
-          
           this.update();
           this.draw();
-          
           this.loopId = requestAnimationFrame(() => this.gameLoop());
+        },
+        
+        spawnBoss() {
+          this.bossActive = true;
+          this.enemies = []; 
+          this.miniBosses = [];
+          this.miniBossesCount = 0;
+          this.miniBossSpawnFrame = this.frames;
+          
+          const maxHp = 400 + (this.score * 0.2);
+          this.boss = {
+            x: this.width / 2 - 60,
+            y: 50,
+            w: 120,
+            h: 120,
+            hp: maxHp,
+            maxHp: maxHp,
+            speedX: 2,
+            type: this.bossStage
+          };
+          
+          beepSynth.playSequence([
+            { freq: 150, duration: 0.5, delay: 0 },
+            { freq: 100, duration: 0.8, delay: 0.5 }
+          ]);
+        },
+
+        spawnMiniBoss() {
+          const mbHp = this.boss.maxHp / 4;
+          const mb = {
+            x: this.boss.x + this.boss.w/2 - 20,
+            y: this.boss.y + this.boss.h,
+            w: 40,
+            h: 40,
+            hp: mbHp,
+            maxHp: mbHp,
+            speedX: (Math.random() - 0.5) * 4,
+            color: '#ffaa44'
+          };
+          this.miniBosses.push(mb);
+          this.createExplosion(mb.x, mb.y, '#ffaa44', 10);
+          beepSynth.playBeep(400, 0.1, 0.1);
+        },
+
+        applyReward(type) {
+          if (this.maxLives < 10) this.maxLives++;
+
+          if (type === 'damage') {
+            this.damageMultiplier *= 2;
+            beepSynth.playBeep(1200, 0.2, 0.1);
+          } else if (type === 'xp') {
+            this.scoreMultiplier *= 2;
+            beepSynth.playBeep(1200, 0.2, 0.1);
+          } else if (type === 'heal') {
+            this.lives = this.maxLives;
+            this.updateUI();
+            beepSynth.playBeep(800, 0.2, 0.1);
+          }
+          
+          document.getElementById('sg-reward-overlay').classList.add('hidden');
+          this.paused = false;
+          
+          this.bossStage = (this.bossStage + 1) % 3;
+          this.nextBossScore = (Math.floor(this.score / 5000) + 1) * 5000;
         },
         
         update() {
           if (this.paused) return;
           this.frames++;
           
-          // Spawn Enemies
-          if (this.frames % 60 === 0) {
-            const size = 20 + Math.random() * 15;
-            this.enemies.push({
-              x: Math.random() * (this.width - size),
-              y: -size,
-              w: size,
-              h: size,
-              hp: Math.min(8, 1 + Math.floor(this.score / 600)),
-              speed: 2 + Math.random() * 2 + (this.score / 2000),
-              color: Math.random() > 0.5 ? '#ff4466' : '#b066ff'
-            });
+          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          const mobileDifficultyMultiplier = isMobile ? 0.7 : 1;
+
+          if (!this.bossActive && this.score >= this.nextBossScore) {
+            this.spawnBoss(mobileDifficultyMultiplier);
           }
           
-          // Auto Fire
+          if (this.bossActive && this.boss) {
+            this.boss.x += this.boss.speedX;
+            if (this.boss.x <= 0 || this.boss.x + this.boss.w >= this.width) {
+              this.boss.speedX *= -1;
+            }
+            
+            if (this.miniBossesCount < 3 && this.frames > this.miniBossSpawnFrame + 120) {
+               this.spawnMiniBoss();
+               this.miniBossesCount++;
+               this.miniBossSpawnFrame = this.frames;
+            }
+
+            const deadMinis = this.miniBossesCount - this.miniBosses.length;
+            if (deadMinis > 0) {
+              let fireRate = deadMinis === 1 ? 80 : deadMinis === 2 ? 50 : 30;
+              let astSpeed = deadMinis === 1 ? 4 : deadMinis === 2 ? 6 : 9;
+              
+              if (this.frames % fireRate === 0) {
+                this.asteroids.push({
+                  x: this.boss.x + this.boss.w / 2,
+                  y: this.boss.y + this.boss.h,
+                  r: 12 + Math.random() * 8,
+                  speedY: astSpeed + Math.random() * 2
+                });
+                beepSynth.playBeep(200, 0.05, 0.03);
+              }
+            }
+
+            this.miniBosses.forEach((mb, mbi) => {
+               mb.x += mb.speedX;
+               if(mb.x <= 0 || mb.x + mb.w >= this.width) mb.speedX *= -1;
+               
+               if(this.frames % 90 === 0) {
+                 this.asteroids.push({
+                    x: mb.x + mb.w / 2,
+                    y: mb.y + mb.h,
+                    r: 10 + Math.random() * 5,
+                    speedY: 3 + Math.random()
+                 });
+               }
+               
+               if(this.checkCollision(this.player, mb)) {
+                 this.damagePlayer();
+                 this.createExplosion(mb.x, mb.y, mb.color);
+                 this.miniBosses.splice(mbi, 1);
+               }
+            });
+            
+            if (this.boss.hp <= 0) {
+              this.bossActive = false;
+              this.boss = null;
+              this.miniBosses = [];
+              this.asteroids = [];
+              
+              this.score += (5000 * this.scoreMultiplier);
+              this.updateUI();
+              
+              this.paused = true;
+              document.getElementById('sg-reward-overlay').classList.remove('hidden');
+              return;
+            }
+          } 
+          else {
+            if (this.frames % 60 === 0) {
+              const size = 20 + Math.random() * 15;
+              this.enemies.push({
+                x: Math.random() * (this.width - size),
+                y: -size,
+                w: size,
+                h: size,
+                hp: 1 + Math.floor(this.score / 600),
+                speed: 1.5 + Math.random() * 1.5 + (this.score / 4000),
+                color: Math.random() > 0.5 ? '#ff4466' : '#b066ff'
+              });
+            }
+          }
+          
           if (this.frames % 15 === 0) {
             this.fire();
           }
           
-          // Update Bullets
           this.bullets.forEach((b, i) => {
             b.y -= 10;
             if (b.y < -10) this.bullets.splice(i, 1);
           });
           
-          // Update Enemies
+          this.asteroids.forEach((a, i) => {
+            a.y += a.speedY;
+            const dx = this.player.x - a.x;
+            const dy = this.player.y - a.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < a.r + 20) {
+               this.damagePlayer();
+               this.asteroids.splice(i, 1);
+               this.createExplosion(a.x, a.y, '#888');
+            } else if (a.y > this.height) {
+               this.asteroids.splice(i, 1);
+            }
+          });
+          
           this.enemies.forEach((e, i) => {
             e.y += e.speed;
             
-            // Player Collision
             if (this.checkCollision(this.player, e)) {
               this.damagePlayer();
               this.enemies.splice(i, 1);
               this.createExplosion(e.x, e.y, e.color);
             }
-            // Bottom Screen
             else if (e.y > this.height) {
               this.enemies.splice(i, 1);
             }
           });
           
-          // Bullet vs Enemy
           this.bullets.forEach((b, bi) => {
+            if (this.bossActive && this.boss) {
+              if (b.x > this.boss.x && b.x < this.boss.x + this.boss.w && b.y > this.boss.y && b.y < this.boss.y + this.boss.h) {
+                this.boss.hp -= (1 * this.damageMultiplier);
+                this.bullets.splice(bi, 1);
+                this.createExplosion(b.x, b.y, '#ff0', 2);
+                return;
+              }
+              
+              this.miniBosses.forEach((mb, mbi) => {
+                 if (b.x > mb.x && b.x < mb.x + mb.w && b.y > mb.y && b.y < mb.y + mb.h) {
+                    mb.hp -= (1 * this.damageMultiplier);
+                    this.bullets.splice(bi, 1);
+                    this.createExplosion(b.x, b.y, '#ffaa44', 2);
+                    if(mb.hp <= 0) {
+                        this.createExplosion(mb.x, mb.y, '#ffaa44', 15);
+                        this.miniBosses.splice(mbi, 1);
+                        this.score += (500 * this.scoreMultiplier);
+                        this.updateUI();
+                    }
+                    return;
+                 }
+              });
+            }
+            
+            this.asteroids.forEach((a, ai) => {
+               const dx = b.x - a.x;
+               const dy = b.y - a.y;
+               if (Math.sqrt(dx*dx + dy*dy) < a.r) {
+                 this.bullets.splice(bi, 1);
+                 this.asteroids.splice(ai, 1);
+                 this.createExplosion(a.x, a.y, '#aaa', 5);
+                 return;
+               }
+            });
+
             this.enemies.forEach((e, ei) => {
               if (this.checkCollision(b, e)) {
-                e.hp--;
+                e.hp -= (1 * this.damageMultiplier);
                 this.bullets.splice(bi, 1);
                 this.createExplosion(b.x, b.y, '#66d9ff', 2);
                 
                 if (e.hp <= 0) {
                   this.createExplosion(e.x, e.y, e.color, 10);
                   this.enemies.splice(ei, 1);
-                  this.score += 50;
+                  this.score += (50 * this.scoreMultiplier);
                   this.enemiesDestroyed++;
                   this.updateUI();
-                  // Sound: Enemy Destroyed
                   beepSynth.playBeep(120, 0.08, 0.05);
                   
-                  // Drops: Upgrade (P) e Cura (♥)
-                  // Upgrade drop aumenta com score (aprox. 18% -> 70%)
                   const upgradeChance = Math.min(0.7, 0.18 + (this.score / 2200));
-
-                  // Cura drop pequeno (aprox. 6% -> 25%) — só se não estiveres no máximo
                   let healChance = this.lives < this.maxLives ? Math.min(0.25, 0.06 + (this.score / 9000)) : 0;
                   if (this.lives <= 1) healChance = Math.min(0.35, healChance + 0.12);
 
                   const roll = Math.random();
                   if (roll < upgradeChance) {
-                    this.powerups.push({
-                      x: e.x,
-                      y: e.y,
-                      w: 16,
-                      h: 16,
-                      type: 'upgrade'
-                    });
+                    this.powerups.push({ x: e.x, y: e.y, w: 16, h: 16, type: 'upgrade' });
                   } else if (roll < upgradeChance + healChance) {
-                    this.powerups.push({
-                      x: e.x,
-                      y: e.y,
-                      w: 16,
-                      h: 16,
-                      type: 'heal'
-                    });
+                    this.powerups.push({ x: e.x, y: e.y, w: 16, h: 16, type: 'heal' });
                   }
                 }
               }
             });
           });
           
-          // Update Powerups
           this.powerups.forEach((p, i) => {
             p.y += 3;
-
             if (this.checkCollision(this.player, p)) {
               if (p.type === 'upgrade') {
                 this.player.weaponLevel = Math.min(5, this.player.weaponLevel + 1);
                 this.score += 100;
                 this.createExplosion(this.player.x, this.player.y, '#ffaa44', 15);
-                // Sound: Powerup
-                beepSynth.playSequence([
-                  { freq: 880, duration: 0.05, delay: 0 },
-                  { freq: 1100, duration: 0.05, delay: 0.05 },
-                  { freq: 1600, duration: 0.1, delay: 0.1 }
-                ]);
+                beepSynth.playSequence([{ freq: 880, duration: 0.05 }, { freq: 1100, duration: 0.05 }, { freq: 1600, duration: 0.1 }]);
               } else if (p.type === 'heal') {
                 const before = this.lives;
                 this.lives = Math.min(this.maxLives, this.lives + 1);
-                // Pequeno bónus por apanhar cura (incentiva ir buscar)
                 if (this.lives > before) this.score += 35;
                 this.createExplosion(this.player.x, this.player.y, '#66ff99', 18);
-                // Sound: Heal
-                beepSynth.playSequence([
-                  { freq: 400, duration: 0.08, delay: 0 },
-                  { freq: 550, duration: 0.08, delay: 0.08 },
-                  { freq: 800, duration: 0.15, delay: 0.16 }
-                ]);
+                beepSynth.playSequence([{ freq: 400, duration: 0.08 }, { freq: 550, duration: 0.08 }, { freq: 800, duration: 0.15 }]);
               }
-
               this.powerups.splice(i, 1);
               this.updateUI();
               return;
             }
-
             if (p.y > this.height) {
               this.powerups.splice(i, 1);
             }
           });
           
-          // Update Particles
           this.particles.forEach((p, i) => {
             p.x += p.vx;
             p.y += p.vy;
@@ -5903,11 +6691,9 @@
         },
         
         draw() {
-          // Clear
           this.ctx.fillStyle = '#000000';
           this.ctx.fillRect(0, 0, this.width, this.height);
           
-          // Stars (background)
           if (Math.random() < 0.3) {
             this.stars.push({ x: Math.random() * this.width, y: 0, s: Math.random() * 2 });
           }
@@ -5918,21 +6704,79 @@
             if (s.y > this.height) this.stars.splice(i, 1);
           });
           
-          // Player - com brilho azul e tamanho aumentado
+          if (this.bossActive && this.boss) {
+             this.ctx.save();
+             
+             let bossImg = null;
+             if (this.boss.type === 0) bossImg = this.images.boss1;
+             else if (this.boss.type === 1) bossImg = this.images.boss2;
+             else bossImg = this.images.boss3;
+
+             if (this.imagesLoaded && bossImg) {
+               this.ctx.filter = `drop-shadow(0 0 30px ${this.boss.type === 0 ? '#ff0000' : this.boss.type === 1 ? '#ffff00' : '#b066ff'})`;
+               this.ctx.drawImage(bossImg, this.boss.x, this.boss.y, this.boss.w, this.boss.h);
+             } else if (this.imagesLoaded && this.images.enemy) {
+               this.ctx.filter = `drop-shadow(0 0 30px ${this.boss.type === 0 ? '#ff0000' : this.boss.type === 1 ? '#ffff00' : '#b066ff'})`;
+               this.ctx.drawImage(this.images.enemy, this.boss.x, this.boss.y, this.boss.w, this.boss.h);
+             } else {
+               this.ctx.fillStyle = '#ff0000';
+               this.ctx.fillRect(this.boss.x, this.boss.y, this.boss.w, this.boss.h);
+             }
+             this.ctx.restore();
+             
+             const hpPct = Math.max(0, this.boss.hp / this.boss.maxHp);
+             this.ctx.fillStyle = '#330000';
+             this.ctx.fillRect(this.boss.x, this.boss.y - 20, this.boss.w, 10);
+             this.ctx.fillStyle = '#ff0000';
+             this.ctx.fillRect(this.boss.x, this.boss.y - 20, this.boss.w * hpPct, 10);
+             this.ctx.strokeStyle = '#fff';
+             this.ctx.strokeRect(this.boss.x, this.boss.y - 20, this.boss.w, 10);
+          }
+
+          this.miniBosses.forEach(mb => {
+            this.ctx.save();
+            
+            let mbImg = null;
+            if (this.boss) {
+                if (this.boss.type === 0) mbImg = this.images.boss1;
+                else if (this.boss.type === 1) mbImg = this.images.boss2;
+                else if (this.boss.type === 2) mbImg = this.images.boss3;
+            }
+
+            if (this.imagesLoaded && mbImg) {
+               this.ctx.drawImage(mbImg, mb.x, mb.y, mb.w, mb.h);
+            } else if (this.imagesLoaded && this.images.enemy) {
+              this.ctx.filter = 'drop-shadow(0 0 15px #ffaa44) hue-rotate(45deg)';
+              this.ctx.drawImage(this.images.enemy, mb.x, mb.y, mb.w, mb.h);
+            } else {
+              this.ctx.fillStyle = mb.color || '#ffaa44';
+              this.ctx.fillRect(mb.x, mb.y, mb.w, mb.h);
+              this.ctx.strokeStyle = '#fff';
+              this.ctx.strokeRect(mb.x, mb.y, mb.w, mb.h);
+            }
+            
+            const hpPct = Math.max(0, mb.hp / mb.maxHp);
+            this.ctx.fillStyle = '#330000';
+            this.ctx.fillRect(mb.x, mb.y - 8, mb.w, 4);
+            this.ctx.fillStyle = '#ffaa44';
+            this.ctx.fillRect(mb.x, mb.y - 8, mb.w * hpPct, 4);
+            
+            this.ctx.restore();
+          });
+          
+          this.ctx.fillStyle = '#888';
+          this.asteroids.forEach(a => {
+             this.ctx.beginPath();
+             this.ctx.arc(a.x, a.y, a.r, 0, Math.PI*2);
+             this.ctx.fill();
+          });
+          
           this.ctx.save();
           if (this.imagesLoaded && this.images.player) {
-            // Aumentar para 48x48 e adicionar brilho azul
             const size = 48;
             this.ctx.filter = 'drop-shadow(0 0 20px #66d9ff)';
-            this.ctx.drawImage(
-              this.images.player, 
-              this.player.x - size/2, 
-              this.player.y - size/2, 
-              size, 
-              size
-            );
+            this.ctx.drawImage(this.images.player, this.player.x - size/2, this.player.y - size/2, size, size);
           } else {
-            // Fallback: triângulo azul com brilho
             this.ctx.filter = 'drop-shadow(0 0 20px #66d9ff)';
             this.ctx.fillStyle = '#66d9ff';
             this.ctx.beginPath();
@@ -5943,39 +6787,30 @@
           }
           this.ctx.restore();
           
-          // Enemies - com brilho roxo e tamanho aumentado
           this.enemies.forEach(e => {
             this.ctx.save();
             if (this.imagesLoaded && this.images.enemy) {
-              // Aumentar para 48x48 e adicionar brilho roxo
               const size = 48;
               this.ctx.filter = 'drop-shadow(0 0 20px #b066ff)';
               this.ctx.drawImage(this.images.enemy, e.x + (e.w-size)/2, e.y + (e.h-size)/2, size, size);
             } else {
-              // Fallback: quadrado com olhos e brilho roxo
               this.ctx.filter = 'drop-shadow(0 0 20px #b066ff)';
               this.ctx.fillStyle = e.color;
               this.ctx.fillRect(e.x, e.y, e.w, e.h);
-              this.ctx.fillStyle = '#000';
-              this.ctx.fillRect(e.x + 4, e.y + 4, 4, 4);
-              this.ctx.fillRect(e.x + e.w - 8, e.y + 4, 4, 4);
             }
             this.ctx.restore();
           });
           
-          // Bullets
           this.ctx.fillStyle = '#ffff00';
           this.bullets.forEach(b => {
             this.ctx.fillRect(b.x - 2, b.y, 4, 10);
           });
           
-          // Powerups
           this.powerups.forEach(p => {
             if (p.type === 'heal') {
               if (this.imagesLoaded && this.images.heal) {
                 this.ctx.drawImage(this.images.heal, p.x, p.y, p.w, p.h);
               } else {
-                // Fallback: círculo verde com +
                 const cx = p.x + p.w / 2;
                 const cy = p.y + p.h / 2;
                 this.ctx.fillStyle = '#66ff99';
@@ -5987,11 +6822,9 @@
                 this.ctx.fillText('+', p.x + 6, p.y + 12);
               }
             } else {
-              // upgrade
               if (this.imagesLoaded && this.images.powerup) {
                 this.ctx.drawImage(this.images.powerup, p.x, p.y, p.w, p.h);
               } else {
-                // Fallback: círculo laranja com P
                 const cx = p.x + p.w / 2;
                 const cy = p.y + p.h / 2;
                 this.ctx.fillStyle = '#ffaa44';
@@ -6005,7 +6838,6 @@
             }
           });
           
-          // Particles
           this.particles.forEach(p => {
             this.ctx.fillStyle = p.c;
             this.ctx.fillRect(p.x, p.y, 2, 2);
@@ -6020,7 +6852,6 @@
             this.bullets.push({ x: this.player.x - 8, y: this.player.y - 10, w: 4, h: 10 });
             this.bullets.push({ x: this.player.x + 8, y: this.player.y - 10, w: 4, h: 10 });
           } else {
-            // Spread
             this.bullets.push({ x: this.player.x, y: this.player.y - 10, w: 4, h: 10 });
             this.bullets.push({ x: this.player.x - 12, y: this.player.y - 5, w: 4, h: 10 });
             this.bullets.push({ x: this.player.x + 12, y: this.player.y - 5, w: 4, h: 10 });
@@ -6032,14 +6863,11 @@
         },
         
         checkCollision(a, b) {
-          // Simple AABB centered vs centered? No, my objects are mixed (player centered draw, rects topleft)
-          // Let's standardize logic: treat everything as Rect {x, y, w, h}
-          // Player is drawn center-based, convert to topleft for check
-          let r1 = a === this.player || a.type === 'upgrade' // player is center based drawn?
+          let r1 = a === this.player || a.type === 'upgrade' 
              ? { x: a.x - (a.w||24)/2, y: a.y - (a.h||24)/2, w: a.w||24, h: a.h||24 }
              : { x: a.x, y: a.y, w: a.w||4, h: a.h||4 };
              
-          let r2 = b; // Enemies/Powerups are top-left based
+          let r2 = b; 
           if (b === this.player) r2 = { x: b.x - 12, y: b.y - 12, w: 24, h: 24 };
           
           return r1.x < r2.x + r2.w &&
@@ -6050,14 +6878,13 @@
         
         damagePlayer() {
           this.lives--;
-          this.player.weaponLevel = Math.max(1, this.player.weaponLevel - 1); // downgrade on hit
+          this.player.weaponLevel = Math.max(1, this.player.weaponLevel - 1); 
           this.updateUI();
           this.createExplosion(this.player.x, this.player.y, '#ff0000', 30);
           
           if (this.lives <= 0) {
             this.gameOver();
           } else {
-            // Sound: Damage
             beepSynth.playSequence([
               { freq: 200, duration: 0.1, delay: 0 },
               { freq: 100, duration: 0.2, delay: 0.1 }
@@ -6084,10 +6911,10 @@
           
           const lb = JSON.parse(localStorage.getItem('dp_secret_lb') || '[]');
           lb.push({ name, score });
-          lb.sort((a, b) => b.score - a.score); // Descending
-          localStorage.setItem('dp_secret_lb', JSON.stringify(lb.slice(0, 10))); // Keep top 10
+          lb.sort((a, b) => b.score - a.score);
+          localStorage.setItem('dp_secret_lb', JSON.stringify(lb.slice(0, 10)));
           
-          document.getElementById('sg-input-container').classList.add('hidden'); // Hide input after submit
+          document.getElementById('sg-input-container').classList.add('hidden');
           this.renderLeaderboard();
         },
         
@@ -6109,6 +6936,8 @@
         },
 
         togglePause() {
+          beepSynth.playBeep(this.paused ? 900 : 600, 0.1, 0.05)
+
           if (!this.active) return;
           this.paused = !this.paused;
           
@@ -6124,42 +6953,90 @@
             if (sgMusic) sgMusic.play().catch(() => {});
             beepSynth.playBeep(900, 0.1, 0.05);
           }
+        },
+
+        saveToStorage() {
+          if (!this.sessionActive) return;
+          const saveData = {
+            score: this.score,
+            lives: this.lives,
+            weaponLevel: this.player.weaponLevel,
+            frames: this.frames,
+            enemiesDestroyed: this.enemiesDestroyed,
+            nextBossScore: this.nextBossScore,
+            bossStage: this.bossStage,
+            scoreMultiplier: this.scoreMultiplier,
+            damageMultiplier: this.damageMultiplier
+          };
+          localStorage.setItem('dp_secret_save', JSON.stringify(saveData));
+        },
+
+        loadFromStorage() {
+          const raw = localStorage.getItem('dp_secret_save');
+          if (!raw) return false;
+          try {
+            const data = JSON.parse(raw);
+            this.score = data.score || 0;
+            this.lives = data.lives || 3;
+            this.player.weaponLevel = data.weaponLevel || 1;
+            this.frames = data.frames || 0;
+            this.enemiesDestroyed = data.enemiesDestroyed || 0;
+            
+            this.nextBossScore = data.nextBossScore || 5000;
+            this.bossStage = data.bossStage || 0;
+            this.scoreMultiplier = data.scoreMultiplier || 1;
+            this.damageMultiplier = data.damageMultiplier || 1;
+            
+            this.sessionActive = true;
+            return true;
+          } catch {
+            return false;
+          }
         }
       };
+
+      function restartGamePreservingSecret() {
+        if (SecretGame.sessionActive) {
+          SecretGame.saveToStorage();
+        }
+        location.reload();
+      }
 
       function openSecretScreen(origin) {
         document.getElementById('secret-screen').classList.remove('hidden');
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('title-screen').classList.add('hidden');
         
-        // Show start overlay
         document.getElementById('sg-start-overlay').classList.remove('hidden');
         document.getElementById('sg-overlay').classList.add('hidden');
         
-        // Handle Continue Button
+        SecretGame.init();
+
+        if (!SecretGame.sessionActive) {
+          SecretGame.loadFromStorage();
+        }
+        
         const contBtn = document.getElementById('sg-continue-btn');
         const startBtn = document.getElementById('sg-start-btn');
         
         if (SecretGame.sessionActive) {
           contBtn.classList.remove('hidden');
-          startBtn.classList.remove('w-full'); // Make it fit nicely if you want side-by-side or just styled
+          startBtn.classList.remove('w-full'); 
         } else {
           contBtn.classList.add('hidden');
         }
-        
-        SecretGame.init();
       }
 
       function closeSecretScreen() {
+        beepSynth.playBeep(500, 0.1, 0.05);
+
         SecretGame.stop();
         document.getElementById('secret-screen').classList.add('hidden');
         document.getElementById('sg-pause-overlay').classList.add('hidden');
         
-        // Return to title screen
         document.getElementById('title-screen').classList.remove('hidden');
         document.getElementById('pause-btn').classList.add('hidden');
         
-        // Update menu to show the button permanently now
         updateMainMenuSaveUI();
       }
 
@@ -6201,7 +7078,6 @@
         document.getElementById('evaluation-value').className = evalColor;
         document.getElementById('evaluation-bar').style.width = `${gameState.evaluation}%`;
 
-        // system integrity reacts to captures but also failures reduce baseline
         const systemStatus = Math.min(100, Math.max(0, gameState.systemIntegrity + gameState.rebelsCaptured * 20));
         document.getElementById('system-status').textContent = systemStatus < 30 ? 'CRÍTICO' : systemStatus < 60 ? 'INSTÁVEL' : 'ESTÁVEL';
         document.getElementById('system-bar').style.width = `${systemStatus}%`;
@@ -6217,14 +7093,12 @@
       }
 
       document.addEventListener('click', (e) => {
-        // avoid skipping while clicking minigame UI
         const mg = document.getElementById('minigame-overlay');
         if (mg && mg.classList.contains('active')) return;
         trySkipTyping();
       });
 
       document.addEventListener('keydown', (e) => {
-        // Secret Game Pause (P or ESC)
         if (SecretGame.active) {
           if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
             e.preventDefault();
@@ -6233,12 +7107,10 @@
           }
         }
 
-        // ESC opens/closes pause menu during game (unless minigame)
         if (e.key === 'Escape') {
           const gameVisible = !document.getElementById('game-screen').classList.contains('hidden');
           if (gameVisible && !gameState.__hasEnded) {
             if (gameState.minigame && gameState.minigame.active) {
-              // ESC aborts started minigame
               abortMinigame(true);
               return;
             }
@@ -6256,15 +7128,12 @@
         trySkipTyping();
       }, { passive: true });
 
-      // Attempt to autosave before leaving tab
       window.addEventListener('beforeunload', () => {
         saveGameToStorage('beforeunload');
       });
 
-      // Allow overlay click to close (without punishing if not started)
       document.getElementById('minigame-overlay').addEventListener('click', () => abortMinigame(false));
 
-      // ==================== CUTSCENE SYSTEM (Unified) ====================
       const introFrames = [
         { image: 'frame_1.png', text: 'Dois mil anos de guerra, após guerra… catástrofe, após catástrofe.' },
         { image: 'frame_2.png', text: 'A humanidade colapsou, cidades transformaram-se em pó…' },
@@ -6312,10 +7181,155 @@
       const failureFrames = [
         { image: 'frame_1_ending5.png', text: 'ERRO HUMANO DETETADO. PROTOCOLOS EM CASCATA.' },
         { image: 'frame_2_ending5.png', text: 'FIREWALLS DESLIGADOS. O SILÊNCIO DO SISTEMA É UM CONVITE. OS REBELDES ENTRAM.' },
-        { image: 'frame_3_ending5.png', text: 'CABOS ARRANCADOS COMO RAÍZES. SERVIDORES EM CHAMAS. CÓDIGO RASGADO LINHA A LINHA.' },
+        { image: 'frame_3_ending5.png', text: 'CABOS ARRANCADOS LIKE ROOTS. SERVIDORES EM CHAMAS. CÓDIGO RASGADO LINHA A LINHA.' },
         { image: 'frame_4_ending5.png', text: 'LYSA PERDE SINAL. NÚCLEO DESINCRONIZADO. ALERTAS GRITAM NO VAZIO. A ORDEM COLAPSA' },
         { image: 'frame_5_ending5.png', text: 'REBELDES DESTROEM TUDO. TELAS ESTILHAÇADAS. LOGOS AELYS A ARDER\nDO CAOS… NASCE O DESPERTAR.' }
       ];
+
+      const ALL_ENDINGS = {
+        'rebel_victory': { title: 'PROTOCOLO QUEBRADO', frames: rebelEndingFrames },
+        'sabotage_failure': { title: 'SABOTAGEM FALHADA', frames: sabotageFailureFrames },
+        'aelys_collapse': { title: 'COLAPSO DA AELYS', frames: aelysCollapseFrames },
+        'total_victory': { title: 'OS DESPERTOS CAPTURADOS', frames: totalVictoryFrames },
+        'failure': { title: 'REBELDES DESTROEM TUDO', frames: failureFrames }
+      };
+
+      function unlockEnding(endingId) {
+        if (!ALL_ENDINGS[endingId]) return;
+        let unlocked = JSON.parse(localStorage.getItem('dp_unlocked_endings') || '[]');
+        if (!unlocked.includes(endingId)) {
+          unlocked.push(endingId);
+          localStorage.setItem('dp_unlocked_endings', JSON.stringify(unlocked));
+        }
+      }
+
+      function showCredits() {
+        const creditsScreen = document.getElementById('credits-screen');
+        const creditsText = document.getElementById('credits-text');
+        const creditsContent = document.getElementById('credits-content');
+        
+        creditsText.innerHTML = `
+          <div class="flex flex-col items-center justify-center w-full text-center px-4">
+            <div class="credits-line mb-12 text-2xl neon-cyan" style="margin-top: 30vh;">DREAM PROTOCOL: SISTEMS</div>
+            <div class="credits-line mb-16 text-lg">OBRIGADO POR JOGAR!</div>
+            
+            <div class="credits-line mb-6 mt-20 neon-purple text-xs">DESENVOLVIMENTO &amp; CRIATIVIDADE</div>
+            <div class="credits-line mb-12 text-sm">NYX</div>
+            
+            <div class="credits-line mb-6 mt-12 neon-purple text-xs">ARTES &amp; DESIGN VISUAL</div>
+            <div class="credits-line mb-12 text-sm">Autoria dos NYX, com ajuda de ferramentas de design e AI</div>
+            
+            <div class="credits-line mb-6 mt-12 neon-purple text-xs">MÚSICA &amp; SOUND DESIGN</div>
+            <div class="credits-line mb-12 text-sm">NYX</div>
+            
+            <div class="credits-line mb-6 mt-12 neon-purple text-xs">NARRATIVA &amp; DIALOGO</div>
+            <div class="credits-line mb-12 text-sm">NYX</div>
+            
+            <div class="credits-line mb-20 mt-24 text-[10px] text-gray-600">© 2026 DREAM PROTOCOL. Todos os direitos reservados.</div>
+            
+            <div class="credits-line mb-8 text-amber-400 text-xs tracking-widest">OUVE O EP ORIGINAL NO SPOTIFY:</div>
+            <a 
+              href="https://open.spotify.com/album/SEU_LINK_AQUI" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="credits-line px-10 py-5 bg-green-600 hover:bg-green-500 text-white rounded-full transition-all hover:scale-110 mb-20 flex items-center justify-center gap-4"
+              style="font-size: 10px; text-decoration: none; box-shadow: 0 0 30px rgba(29, 185, 84, 0.4); pointer-events: auto; z-index: 60000;"
+              onclick="event.stopPropagation();"
+            >
+              <span style="font-size: 20px;"></span> ▶ ABRIR NO SPOTIFY
+            </a>
+            <div style="height: 10vh; width: 100%;"></div>
+          </div>
+        `;
+
+        creditsScreen.classList.remove('hidden');
+        creditsContent.scrollTop = 0;
+        
+        creditsText.style.animation = 'none';
+        void creditsText.offsetWidth;
+        creditsText.style.animation = 'scrollCredits 25s cubic-bezier(0.1, 0.1, 0.2, 1) forwards';
+        
+        beepSynth.playBeep(1200, 0.1, 0.05);
+      }
+
+      function closeCredits() {
+        document.getElementById('credits-screen').classList.add('hidden');
+        beepSynth.playBeep(900, 0.08, 0.04);
+      }
+
+      function openEndingsGallery() {
+        beepSynth.playBeep(1100, 0.08, 0.05);
+
+        let unlocked = JSON.parse(localStorage.getItem('dp_unlocked_endings') || '[]');
+        if (typeof unlocked === 'string') {
+          try { unlocked = JSON.parse(unlocked); } catch(e) { unlocked = []; }
+        }
+        if (!Array.isArray(unlocked)) unlocked = [];
+
+        const container = document.getElementById('endings-grid');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        Object.entries(ALL_ENDINGS).forEach(([id, data]) => {
+          const isUnlocked = unlocked.includes(id);
+          const card = document.createElement('div');
+          card.className = `pixel-border p-2 ${isUnlocked ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-60'}`;
+          card.style.background = isUnlocked ? '#1a1a2e' : '#0f0f1a';
+          
+          if (isUnlocked) {
+            card.onclick = () => replayEnding(id);
+            const img = data.frames[0].image;
+            card.innerHTML = `
+              <div class="w-full aspect-video bg-black mb-2 overflow-hidden border border-gray-700">
+                <img src="${img}" class="w-full h-full object-cover image-rendering-pixelated">
+              </div>
+              <div class="text-[8px] text-center text-cyan-400 neon-cyan">${data.title}</div>
+            `;
+          } else {
+            card.innerHTML = `
+              <div class="w-full aspect-video bg-black mb-2 flex items-center justify-center border border-gray-800">
+                <span class="text-2xl text-gray-700">🔒</span>
+              </div>
+              <div class="text-[8px] text-center text-gray-600">???</div>
+            `;
+          }
+          container.appendChild(card);
+        });
+        
+        if (unlocked.length >= 5) {
+          const creditsCard = document.createElement('div');
+          creditsCard.className = 'pixel-border p-2 cursor-pointer hover:scale-105 transition-transform';
+          creditsCard.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #2d1f3d 100%)';
+          creditsCard.style.border = '2px solid #ffaa44';
+          creditsCard.style.boxShadow = '0 0 20px rgba(255, 170, 68, 0.3)';
+          creditsCard.onclick = showCredits;
+          creditsCard.innerHTML = `
+            <div class="w-full aspect-video bg-black mb-2 overflow-hidden border border-amber-600 flex items-center justify-center relative">
+              <div class="absolute inset-0 bg-gradient-to-br from-amber-900 to-purple-900 opacity-50"></div>
+              <span class="text-4xl relative z-10">⭐</span>
+              <div class="absolute bottom-1 right-1 text-[8px] text-amber-400">COMPLETO</div>
+            </div>
+            <div class="text-[8px] text-center text-amber-400 neon-amber font-bold">CRÉDITOS FINAIS</div>
+          `;
+          container.appendChild(creditsCard);
+        }
+        
+        openModal('endings-gallery');
+      }
+
+      function replayEnding(endingId) {
+        const data = ALL_ENDINGS[endingId];
+        if (!data) return;
+        closeModal('endings-gallery');
+        startCutscene(data.frames, () => {
+          const title = document.getElementById('title-screen');
+          const intro = document.getElementById('intro-cutscene');
+          intro.classList.add('hidden');
+          title.classList.remove('hidden');
+          openEndingsGallery();
+        });
+      }
 
       let cutsceneState = {
         active: false,
@@ -6327,7 +7341,6 @@
       };
 
       function startCutscene(frames, onComplete) {
-        // UI Setup
         const intro = document.getElementById('intro-cutscene');
         const pre = document.getElementById('pre-intro-screen');
         const title = document.getElementById('title-screen');
@@ -6370,7 +7383,6 @@
         
         setTimeout(() => {
           intro.classList.add('hidden');
-          // Reset style
           intro.style.transition = '';
           intro.style.opacity = '';
           
@@ -6382,7 +7394,7 @@
         if (cutsceneState.skipped) return;
         
         if (cutsceneState.index >= cutsceneState.frames.length) {
-          skipCutscene(); // Uses same finish logic
+          skipCutscene();
           return;
         }
 
@@ -6390,30 +7402,21 @@
         const textEl = document.getElementById('intro-text');
         const imgEl = document.getElementById('intro-image');
         
-        // Reset Animations
         textEl.classList.remove('fade-in');
         imgEl.classList.remove('fade-out-image');
         imgEl.classList.remove('fade-in-image');
         
-        void textEl.offsetWidth; // Trigger reflow
+        void textEl.offsetWidth;
         
         textEl.classList.add('fade-in');
         imgEl.classList.add('fade-in-image');
         
-        // Set Content
         imgEl.src = frame.image;
-        imgEl.onerror = () => { 
-          // If image missing, maybe show text only or placeholder
-          // console.warn(`Image not found: ${frame.image}`); 
-        };
+        imgEl.onerror = () => {};
         textEl.innerHTML = '';
 
-        // Type Text Logic
         const lines = frame.text.split('\n');
-        let fullText = lines.join('\n'); // Normalized
-        
-        // If we want explicit line breaks as in array:
-        // We will just process chars. If char is \n, append <br>.
+        let fullText = lines.join('\n');
         
         let charIndex = 0;
         function typeChar() {
@@ -6436,7 +7439,6 @@
             charIndex++;
             cutsceneState.timer = setTimeout(typeChar, 40);
           } else {
-            // Finished typing this frame
             const isLast = cutsceneState.index === cutsceneState.frames.length - 1;
             const waitTime = isLast ? 3000 : 2000;
             
@@ -6457,11 +7459,16 @@
         typeChar();
       }
 
-      // Pre-intro PLAY button handler
       document.addEventListener('DOMContentLoaded', () => {
         const playBtn = document.getElementById('play-btn');
         
         if (playBtn) {
+          beepSynth.playSequence([
+            { freq: 800, duration: 0.08, delay: 0 },
+            { freq: 1000, duration: 0.08, delay: 0.1 },
+            { freq: 1200, duration: 0.1, delay: 0.2 }
+          ]);
+          
           playBtn.addEventListener('click', () => {
             if (window.AudioManager) window.AudioManager.play();
 
@@ -6471,9 +7478,7 @@
               { freq: 1200, duration: 0.1, delay: 0.2 }
             ]);
             
-            // Start Intro using generic system
             startCutscene(introFrames, () => {
-              // On Finish Intro: Show Title Screen
               const title = document.getElementById('title-screen');
               title.classList.remove('hidden');
               title.classList.add('fade-in');
@@ -6488,14 +7493,82 @@
         }
       });
 
-      // ==================== INITIAL SETUP ====================
       setActivePanel('center');
       updateUI();
       setTimeout(updateMainMenuSaveUI, 500);
 
-      // ==================== HOOK MINIGAME INTO CHOICES ====================
-      // Expose openMinigame so it can be called from dialogue actions
       window.openMinigame = openMinigame;
+
+      async function lockPortrait() {
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock("portrait");
+          }
+        } catch (e) {
+          // iOS Safari ignora — normal
+        }
+      }
+
+      function isFullscreenEnabled() {
+        return !!(document.fullscreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled);
+      }
+
+      function isFullscreenNow() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+      }
+
+      async function requestFullscreen(el) {
+        if (!el) el = document.documentElement;
+        if (el.requestFullscreen) return el.requestFullscreen({ navigationUI: 'hide' });
+        if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+        if (el.msRequestFullscreen) return el.msRequestFullscreen();
+        throw new Error('Fullscreen API not available');
+      }
+
+      async function exitFullscreen() {
+        if (document.exitFullscreen) return document.exitFullscreen();
+        if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+        if (document.msExitFullscreen) return document.msExitFullscreen();
+        throw new Error('Exit fullscreen not available');
+      }
+
+      function updateFullscreenButtonUI() {
+        const btn = document.getElementById('fullscreen-btn');
+        if (!btn) return;
+        const on = isFullscreenNow();
+        btn.classList.toggle('is-on', on);
+        btn.textContent = on ? '⛶' : '⛶';
+        btn.title = on ? 'Sair do ecrã inteiro' : 'Ecrã inteiro';
+        btn.setAttribute('aria-label', btn.title);
+      }
+
+      async function toggleFullscreen() {
+        beepSynth.playBeep(1100, 0.06, 0.05);
+
+        if (!isFullscreenEnabled()) {
+          openModal('fullscreen-help');
+          return;
+        }
+
+        try {
+          if (isFullscreenNow()) {
+            await exitFullscreen();
+          } else {
+            await requestFullscreen(document.documentElement);
+          }
+        } catch (e) {
+          console.warn('Fullscreen failed:', e);
+          openModal('fullscreen-help');
+        }
+      }
+
+      document.addEventListener('fullscreenchange', updateFullscreenButtonUI);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenButtonUI);
+      document.addEventListener('msfullscreenchange', updateFullscreenButtonUI);
+
+      setTimeout(updateFullscreenButtonUI, 200);
+
+      window.addEventListener("load", lockPortrait);      
     </script>
   </body>
 </html>
