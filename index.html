@@ -1284,32 +1284,27 @@
         overflow: hidden;
       }
 
-      #pre-intro-screen::before, #title-screen::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-size: cover;
-        background-position: center;
-        opacity: 0.3;
-        z-index: 0;
-        pointer-events: none;
-      }
+      /* Background video pseudo-elements removed, using HTML videos */
 
-      #pre-intro-screen::before {
-        background-image: url('fundo_play.gif');
-      }
-
-      #title-screen::before {
-        background-image: url('fundo_mainmenu.gif');
-      }
-
-      /* Ensure content is above the pseudo-element background */
-      #pre-intro-screen > *, #title-screen > * {
+      /* Ensure content is above the background video */
+      #pre-intro-screen > *:not(.bg-video-wrap), #title-screen > *:not(.bg-video-wrap) {
         position: relative;
         z-index: 1;
+      }
+
+      .bg-video-wrap {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .bg-video-wrap video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.3;
       }
 
       /* Notification Alert System */
@@ -1437,6 +1432,7 @@
       }
     </style>
   </head>
+
   <body>
     <div class="scanline"></div>
 
@@ -1659,7 +1655,7 @@
           <p><strong>Função:</strong> Recuperação de Arte Sonora Banida e Interferência de Sinal</p>
 
           <p style="margin-top: 16px; border-top: 1px solid #444; padding-top: 12px;">
-            Um dos últimos a trabalhar no Arquivo Nacional Sonoro, ChordBreaker era responsável pela preservação de 
+            Um dos últimos a trabalhar no Arquivo Sonoro, ChordBreaker era responsável pela preservação de 
             composições antigas classificadas como emocionalmente instáveis pela ÆLYS. Numa auditoria noturna, 
             descobriu que obras inteiras estavam a ser permanentemente apagadas dos servidores centrais.
             <br><br>
@@ -2018,7 +2014,7 @@
         <button class="modal-close sticky-close" onclick="closeModal('tutorial-modal')">×</button>
         <div class="modal-title mb-4" style="color: #66d9ff;">TUTORIAL</div>
         <div class="flex justify-center w-full">
-          <img id="tutorial-gif" src="" alt="Tutorial" style="max-width: 100%; height: auto; image-rendering: pixelated; border: 2px solid #444;" />
+          <video id="tutorial-video" autoplay loop muted playsinline style="max-width: 100%; height: auto; image-rendering: pixelated; border: 2px solid #444;"></video>
         </div>
       </div>
     </div>
@@ -2026,7 +2022,12 @@
     <div id="app" class="w-screen" style="height: 100dvh; padding-top: var(--safe-top);">
       <div class="w-full h-full flex items-center justify-center p-2 md:p-4 overflow-hidden">
         <!-- Pre-Intro Screen (PLAY button) -->
-        <div id="pre-intro-screen" class="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-black">
+        <div id="pre-intro-screen" class="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-black relative overflow-hidden">
+          <div class="bg-video-wrap">
+            <video autoplay loop muted playsinline>
+              <source src="fundo_play.mp4" type="video/mp4">
+            </video>
+          </div>
           <button id="play-btn" class="pixel-border neon-cyan text-2xl cursor-pointer hover:bg-cyan-900 hover:bg-opacity-20 transition-all" style="min-height: 100px; padding: 32px 64px; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); border: 3px solid #66d9ff; box-shadow: 0 0 20px rgba(102,217,255,0.3);">
             ▶ PLAY
           </button>
@@ -2045,7 +2046,12 @@
         </div>
 
         <!-- Title Screen -->
-        <div id="title-screen" class="w-full h-full flex flex-col items-center justify-center text-center fade-in hidden">
+        <div id="title-screen" class="w-full h-full flex flex-col items-center justify-center text-center fade-in hidden relative overflow-hidden">
+          <div class="bg-video-wrap">
+            <video autoplay loop muted playsinline>
+              <source src="fundo_mainmenu.mp4" type="video/mp4">
+            </video>
+          </div>
           <div class="mb-8">
             <h1 class="text-2xl neon-cyan pulse mb-4">DREAM PROTOCOL</h1>
             <h2 class="text-lg neon-purple">SISTEMS</h2>
@@ -2188,7 +2194,6 @@
               <!-- Dialogue Box -->
               <div id="dialogue-container" class="hidden">
                 <div class="dialogue-box md-4">
-                  <button id="undo-btn" class="undo-button" onclick="undo()" title="Voltar Escolha" disabled>↺</button>
                   <div class="flex gap-4 md-4" style="align-items: flex-start;">
                     <div class="portrait" id="npc-portrait"></div>
                     <div class="flex-1 min-w-0">
@@ -2326,7 +2331,7 @@
           try {
             const payload = buildSavePayload();
             const autoSaveData = {
-              version: 1,
+              version:1,
               timestamp: now,
               isMobile: true,
               payload: payload
@@ -2481,7 +2486,7 @@
         gameState.snutsMood = gs.snutsMood || 'normal';
 
         gameState.minigame = gs.minigame || {
-          failures: 0,
+          failures:0,
           results: { elias: null, nora: null, kael: null, vira: null },
           active: null,
           started: false
@@ -2923,13 +2928,587 @@
         __hasEnded: false
       };
 
+      function restartGamePreservingSecret() {
+        if (SecretGame.sessionActive) {
+          SecretGame.saveToStorage();
+        }
+        location.reload();
+      }
+
+      function openSecretScreen(origin) {
+        document.getElementById('secret-screen').classList.remove('hidden');
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('title-screen').classList.add('hidden');
+        
+        document.getElementById('sg-start-overlay').classList.remove('hidden');
+        document.getElementById('sg-overlay').classList.add('hidden');
+        
+        SecretGame.init();
+
+        if (!SecretGame.sessionActive) {
+          SecretGame.loadFromStorage();
+        }
+        
+        const contBtn = document.getElementById('sg-continue-btn');
+        const startBtn = document.getElementById('sg-start-btn');
+        
+        if (SecretGame.sessionActive) {
+          contBtn.classList.remove('hidden');
+          startBtn.classList.remove('w-full'); 
+        } else {
+          contBtn.classList.add('hidden');
+        }
+      }
+
+      function closeSecretScreen() {
+        beepSynth.playBeep(500, 0.1, 0.05);
+
+        SecretGame.stop();
+        document.getElementById('secret-screen').classList.add('hidden');
+        document.getElementById('sg-pause-overlay').classList.add('hidden');
+        
+        document.getElementById('title-screen').classList.remove('hidden');
+        document.getElementById('pause-btn').classList.add('hidden');
+        
+        updateMainMenuSaveUI();
+      }
+
+      function menuAction(action) {
+        switch(action) {
+          case 'status':
+            addSystemMessage(`CAPTURA: ${gameState.rebelsCaptured}/4 | FALHAS: ${gameState.minigame.failures}/3`);
+            break;
+          case 'scan':
+            addSystemMessage('Dica: faz SCAN -> PROTOCOLO -> CAPTURA');
+            break;
+          case 'lysainfo':
+            addSystemMessage('LYSA: SUPERVISORA IA | PROTOCOLOS: ATIVOS');
+            break;
+          case 'rebels':
+            addSystemMessage('REMI, CODEFALLEN, CHORDBREAKER, RUSTBORN');
+            break;
+          case 'logs':
+            addSystemMessage('INFILTRAÇÃO: 12h atrás');
+            break;
+        }
+        if (isMobileLayout()) setActivePanel('right');
+      }
+
+      function addSystemMessage(msg) {
+        const container = document.getElementById('system-messages');
+        if (!container) return;
+        const div = document.createElement('div');
+        div.className = 'text-cyan-400 fade-in';
+        div.textContent = `> ${msg}`;
+        container.appendChild(div);
+        while (container.children.length > 6) container.removeChild(container.children[1]);
+      }
+
+      function updateUI() {
+        let evalText = gameState.evaluation >= 70 ? 'ELEVADA' : gameState.evaluation >= 40 ? 'ACEITÁVEL' : 'BAIXA';
+        let evalColor = gameState.evaluation >= 70 ? 'neon-green' : gameState.evaluation >= 40 ? 'neon-amber' : 'neon-red';
+        document.getElementById('evaluation-value').textContent = evalText;
+        document.getElementById('evaluation-value').className = evalColor;
+        document.getElementById('evaluation-bar').style.width = `${gameState.evaluation}%`;
+
+        const systemStatus = Math.min(100, Math.max(0, gameState.systemIntegrity + gameState.rebelsCaptured * 20));
+        document.getElementById('system-status').textContent = systemStatus < 30 ? 'CRÍTICO' : systemStatus < 60 ? 'INSTÁVEL' : 'ESTÁVEL';
+        document.getElementById('system-bar').style.width = `${systemStatus}%`;
+
+        document.getElementById('efficiency-value').textContent = `${gameState.efficiency}%`;
+        document.getElementById('efficiency-bar').style.width = `${gameState.efficiency}%`;
+
+        updateRebelStatus();
+      }
+
+      function trySkipTyping() {
+        if (isTyping) skipTyping = true;
+      }
+
+      document.addEventListener('click', (e) => {
+        const mg = document.getElementById('minigame-overlay');
+        if (mg && mg.classList.contains('active')) return;
+        trySkipTyping();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (SecretGame.active) {
+          if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
+            e.preventDefault();
+            SecretGame.togglePause();
+            return;
+          }
+        }
+
+        if (e.key === 'Escape') {
+          const gameVisible = !document.getElementById('game-screen').classList.contains('hidden');
+          if (gameVisible && !gameState.__hasEnded) {
+            if (gameState.minigame && gameState.minigame.active) {
+              abortMinigame(true);
+              return;
+            }
+            const overlay = document.getElementById('pause-overlay');
+            if (overlay && overlay.classList.contains('active')) closePauseMenu();
+            else openPauseMenu();
+          }
+        }
+        trySkipTyping();
+      });
+
+      document.addEventListener('touchstart', (e) => {
+        const mg = document.getElementById('minigame-overlay');
+        if (mg && mg.classList.contains('active')) return;
+        trySkipTyping();
+      }, { passive: true });
+
+      window.addEventListener('beforeunload', () => {
+        saveGameToStorage('beforeunload');
+      });
+
+      document.getElementById('minigame-overlay').addEventListener('click', () => abortMinigame(false));
+
+      const introFrames = [
+        { image: 'frame_1.png', text: 'Dois mil anos de guerra, após guerra… catástrofe, após catástrofe.' },
+        { image: 'frame_2.png', text: 'A humanidade colapsou, cidades transformaram-se em pó…' },
+        { image: 'frame_3.png', text: 'Nações tornaram-se memória, a esperança tornou-se uma palavra esquecida.' },
+        { image: 'frame_4.png', text: 'Mas das cinzas… algo novo nasceu.' },
+        { image: 'frame_5.png', text: 'AELYS Corporation. As guerras foram travadas, as catástrofes foram controladas.' },
+        { image: 'frame_6.png', text: 'Era de um novo mundo.' },
+        { image: 'frame_7.png', text: 'O trauma foi apagado, a dor tornou-se dados.' },
+        { image: 'frame_8.png', text: 'O medo tornou-se ruído, e a memória… tornou-se opcional.\nA humanidade acreditou que tinha sido salva.' },
+        { image: 'frame_9.png', text: 'Pelo menos… era isso que todos queriam acreditar.' }
+      ];
+
+      const rebelEndingFrames = [
+        { image: 'frame_1_ending1.png', text: 'Snuts seguiu todos os protocolos.\nExcepto o último.' },
+        { image: 'frame_2_ending1.png', text: 'Não com uma explosão.\nMas com uma escolha.' },
+        { image: 'frame_3_ending1.png', text: 'Sistemas desligaram-se. Memórias regressaram.\nA dor voltou a existir.' },
+        { image: 'frame_4_ending1.png', text: 'O mundo acordou confuso. Livre. Imperfeito. Humano.' },
+        { image: 'frame_5_ending1.png', text: 'O sistema foi silenciado.\nMas os sonhos… finalmente puderam falar.' }
+      ];
+
+      const sabotageFailureFrames = [
+        { image: 'frame_1_ending2.png', text: 'Snuts tentou quebrar o sistema.\nO sistema observava.' },
+        { image: 'frame_2_ending2.png', text: 'O protocolo não falhou.\nEle adaptou-se.' },
+        { image: 'frame_3_ending2.png', text: 'A LYSA identificou o desvio.\nUma anomalia. Um técnico.' },
+        { image: 'frame_4_ending2.png', text: 'A decisão foi imediata.\nSilenciosa. Perfeita.' },
+        { image: 'frame_5_ending2.png', text: 'O sistema continua.\nMas o Snuts… não.' }
+      ];
+
+      const aelysCollapseFrames = [
+        { image: 'frame_1_ending3.png', text: 'Três falhas críticas foram registadas. Em simultâneo.' },
+        { image: 'frame_2_ending3.png', text: 'O controlo fragmentou-se. Os sistemas entraram em conflito.' },
+        { image: 'frame_3_ending3.png', text: 'Os rebeldes escaparam. Não como heróis. Mas como sobreviventes.' },
+        { image: 'frame_4_ending3.png', text: 'A AELYS tentou corrigir o erro. O erro era ela própria.' },
+        { image: 'frame_5_ending3.png', text: 'O sistema colapsou. O futuro… ficou em aberto.' }
+      ];
+
+      const totalVictoryFrames = [
+        { image: 'frame_1_ending4.png', text: 'A operação foi concluída. Sem desvios.' },
+        { image: 'frame_2_ending4.png', text: 'Quatro anomalias localizadas. Quatro consciências contidas.' },
+        { image: 'frame_3_ending4.png', text: 'Os Despertos foram capturados. O sistema manteve-se intacto.' },
+        { image: 'frame_4_ending4.png', text: 'Snuts executou o protocolo. Sem hesitação.' },
+        { image: 'frame_5_ending4.png', text: 'A ordem foi restaurada. A humanidade dorme.' }
+      ];
+
+      const failureFrames = [
+        { image: 'frame_1_ending5.png', text: 'ERRO HUMANO DETETADO. PROTOCOLOS EM CASCATA.' },
+        { image: 'frame_2_ending5.png', text: 'FIREWALLS DESLIGADOS. O SILÊNCIO DO SISTEMA É UM CONVITE. OS REBELDES ENTRAM.' },
+        { image: 'frame_3_ending5.png', text: 'CABOS ARRANCADOS LIKE ROOTS. SERVIDORES EM CHAMAS. CÓDIGO RASGADO LINHA A LINHA.' },
+        { image: 'frame_4_ending5.png', text: 'LYSA PERDE SINAL. NÚCLEO DESINCRONIZADO. ALERTAS GRITAM NO VAZIO. A ORDEM COLAPSA' },
+        { image: 'frame_5_ending5.png', text: 'REBELDES DESTROEM TUDO. TELAS ESTILHAÇADAS. LOGOS AELYS A ARDER\nDO CAOS… NASCE O DESPERTAR.' }
+      ];
+
+      const ALL_ENDINGS = {
+        'rebel_victory': { title: 'PROTOCOLO QUEBRADO', frames: rebelEndingFrames },
+        'sabotage_failure': { title: 'SABOTAGEM FALHADA', frames: sabotageFailureFrames },
+        'aelys_collapse': { title: 'COLAPSO DA AELYS', frames: aelysCollapseFrames },
+        'total_victory': { title: 'OS DESPERTOS CAPTURADOS', frames: totalVictoryFrames },
+        'failure': { title: 'REBELDES DESTROEM TUDO', frames: failureFrames }
+      };
+
+      function unlockEnding(endingId) {
+        if (!ALL_ENDINGS[endingId]) return;
+        let unlocked = JSON.parse(localStorage.getItem('dp_unlocked_endings') || '[]');
+        if (!unlocked.includes(endingId)) {
+          unlocked.push(endingId);
+          localStorage.setItem('dp_unlocked_endings', JSON.stringify(unlocked));
+        }
+      }
+
+      function showCredits() {
+        const creditsScreen = document.getElementById('credits-screen');
+        const creditsText = document.getElementById('credits-text');
+        const creditsContent = document.getElementById('credits-content');
+        
+        creditsText.innerHTML = `
+          <div class="flex flex-col items-center justify-center w-full text-center px-4">
+            <div class="credits-line mb-12 text-2xl neon-cyan" style="margin-top: 30vh;">DREAM PROTOCOL: SISTEMS</div>
+            <div class="credits-line mb-16 text-lg">OBRIGADO POR JOGAR!</div>
+            
+            <div class="credits-line mb-6 mt-20 neon-purple text-xs">DESENVOLVIMENTO &amp; CRIATIVIDADE</div>
+            <div class="credits-line mb-12 text-sm">NYX</div>
+            
+            <div class="credits-line mb-6 mt-12 neon-purple text-xs">ARTES &amp; DESIGN VISUAL</div>
+            <div class="credits-line mb-12 text-sm">Autoria dos NYX, com ajuda de ferramentas de design e AI</div>
+            
+            <div class="credits-line mb-6 mt-12 neon-purple text-xs">MÚSICA &amp; SOUND DESIGN</div>
+            <div class="credits-line mb-12 text-sm">NYX</div>
+            
+            <div class="credits-line mb-6 mt-12 neon-purple text-xs">NARRATIVA &amp; DIALOGO</div>
+            <div class="credits-line mb-12 text-sm">NYX</div>
+            
+            <div class="credits-line mb-20 mt-24 text-[10px] text-gray-600">© 2026 DREAM PROTOCOL. Todos os direitos reservados.</div>
+            
+            <div class="credits-line mb-8 text-amber-400 text-xs tracking-widest">OUVE O EP ORIGINAL NO SPOTIFY:</div>
+            <a 
+              href="https://open.spotify.com/album/SEU_LINK_AQUI" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="credits-line px-10 py-5 bg-green-600 hover:bg-green-500 text-white rounded-full transition-all hover:scale-110 mb-20 flex items-center justify-center gap-4"
+              style="font-size: 10px; text-decoration: none; box-shadow: 0 0 30px rgba(29, 185, 84, 0.4); pointer-events: auto; z-index: 60000;"
+              onclick="event.stopPropagation();"
+            >
+              <span style="font-size: 20px;"></span> ▶ ABRIR NO SPOTIFY
+            </a>
+            <div style="height: 10vh; width: 100%;"></div>
+          </div>
+        `;
+
+        creditsScreen.classList.remove('hidden');
+        creditsContent.scrollTop = 0;
+        
+        creditsText.style.animation = 'none';
+        void creditsText.offsetWidth;
+        creditsText.style.animation = 'scrollCredits 25s cubic-bezier(0.1, 0.1, 0.2, 1) forwards';
+        
+        beepSynth.playBeep(1200, 0.1, 0.05);
+      }
+
+      function closeCredits() {
+        document.getElementById('credits-screen').classList.add('hidden');
+        beepSynth.playBeep(900, 0.08, 0.04);
+      }
+
+      function openEndingsGallery() {
+        beepSynth.playBeep(1100, 0.08, 0.05);
+
+        let unlocked = JSON.parse(localStorage.getItem('dp_unlocked_endings') || '[]');
+        if (typeof unlocked === 'string') {
+          try { unlocked = JSON.parse(unlocked); } catch(e) { unlocked = []; }
+        }
+        if (!Array.isArray(unlocked)) unlocked = [];
+
+        const container = document.getElementById('endings-grid');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        Object.entries(ALL_ENDINGS).forEach(([id, data]) => {
+          const isUnlocked = unlocked.includes(id);
+          const card = document.createElement('div');
+          card.className = `pixel-border p-2 ${isUnlocked ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-60'}`;
+          card.style.background = isUnlocked ? '#1a1a2e' : '#0f0f1a';
+          
+          if (isUnlocked) {
+            card.onclick = () => replayEnding(id);
+            const img = data.frames[0].image;
+            card.innerHTML = `
+              <div class="w-full aspect-video bg-black mb-2 overflow-hidden border border-gray-700">
+                <img src="${img}" class="w-full h-full object-cover image-rendering-pixelated">
+              </div>
+              <div class="text-[8px] text-center text-cyan-400 neon-cyan">${data.title}</div>
+            `;
+          } else {
+            card.innerHTML = `
+              <div class="w-full aspect-video bg-black mb-2 flex items-center justify-center border border-gray-800">
+                <span class="text-2xl text-gray-700">🔒</span>
+              </div>
+              <div class="text-[8px] text-center text-gray-600">???</div>
+            `;
+          }
+          container.appendChild(card);
+        });
+        
+        if (unlocked.length >= 5) {
+          const creditsCard = document.createElement('div');
+          creditsCard.className = 'pixel-border p-2 cursor-pointer hover:scale-105 transition-transform';
+          creditsCard.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #2d1f3d 100%)';
+          creditsCard.style.border = '2px solid #ffaa44';
+          creditsCard.style.boxShadow = '0 0 20px rgba(255, 170, 68, 0.3)';
+          creditsCard.onclick = showCredits;
+          creditsCard.innerHTML = `
+            <div class="w-full aspect-video bg-black mb-2 overflow-hidden border border-amber-600 flex items-center justify-center relative">
+              <div class="absolute inset-0 bg-gradient-to-br from-amber-900 to-purple-900 opacity-50"></div>
+              <span class="text-4xl relative z-10">⭐</span>
+              <div class="absolute bottom-1 right-1 text-[8px] text-amber-400">COMPLETO</div>
+            </div>
+            <div class="text-[8px] text-center text-amber-400 neon-amber font-bold">CRÉDITOS FINAIS</div>
+          `;
+          container.appendChild(creditsCard);
+        }
+        
+        openModal('endings-gallery');
+      }
+
+      function replayEnding(endingId) {
+        const data = ALL_ENDINGS[endingId];
+        if (!data) return;
+        closeModal('endings-gallery');
+        startCutscene(data.frames, () => {
+          const title = document.getElementById('title-screen');
+          const intro = document.getElementById('intro-cutscene');
+          intro.classList.add('hidden');
+          title.classList.remove('hidden');
+          openEndingsGallery();
+        });
+      }
+
+      let cutsceneState = {
+        active: false,
+        frames: [],
+        index: 0,
+        onComplete: null,
+        skipped: false,
+        timer: null
+      };
+
+      function startCutscene(frames, onComplete) {
+        const intro = document.getElementById('intro-cutscene');
+        const pre = document.getElementById('pre-intro-screen');
+        const title = document.getElementById('title-screen');
+        const game = document.getElementById('game-screen');
+        const pauseBtn = document.getElementById('pause-btn');
+
+        if (pre) pre.classList.add('hidden');
+        if (title) title.classList.add('hidden');
+        if (game) game.classList.add('hidden');
+        if (pauseBtn) pauseBtn.classList.add('hidden');
+        
+        intro.classList.remove('hidden');
+        intro.style.opacity = '1';
+
+        cutsceneState = {
+          active: true,
+          frames: frames,
+          index: 0,
+          onComplete: onComplete,
+          skipped: false,
+          timer: null
+        };
+
+        playNextCutsceneFrame();
+      }
+
+      function skipCutscene() {
+        if (!cutsceneState.active || cutsceneState.skipped) return;
+        cutsceneState.skipped = true;
+        if (cutsceneState.timer) clearTimeout(cutsceneState.timer);
+        
+        beepSynth.playSequence([
+          { freq: 1000, duration: 0.06, delay: 0 },
+          { freq: 1200, duration: 0.06, delay: 0.08 }
+        ]);
+        
+        const intro = document.getElementById('intro-cutscene');
+        intro.style.opacity = '0';
+        intro.style.transition = 'opacity 0.5s ease-out';
+        
+        setTimeout(() => {
+          intro.classList.add('hidden');
+          intro.style.transition = '';
+          intro.style.opacity = '';
+          
+          if (cutsceneState.onComplete) cutsceneState.onComplete();
+        }, 500);
+      }
+
+      function playNextCutsceneFrame() {
+        if (cutsceneState.skipped) return;
+        
+        if (cutsceneState.index >= cutsceneState.frames.length) {
+          skipCutscene();
+          return;
+        }
+
+        const frame = cutsceneState.frames[cutsceneState.index];
+        const textEl = document.getElementById('intro-text');
+        const imgEl = document.getElementById('intro-image');
+        
+        textEl.classList.remove('fade-in');
+        imgEl.classList.remove('fade-out-image');
+        imgEl.classList.remove('fade-in-image');
+        
+        void textEl.offsetWidth;
+        
+        textEl.classList.add('fade-in');
+        imgEl.classList.add('fade-in-image');
+        
+        imgEl.src = frame.image;
+        imgEl.onerror = () => {};
+        textEl.innerHTML = '';
+
+        const lines = frame.text.split('\n');
+        let fullText = lines.join('\n');
+        
+        let charIndex = 0;
+        function typeChar() {
+          if (cutsceneState.skipped) return;
+          
+          if (charIndex < fullText.length) {
+            const ch = fullText[charIndex];
+            if (ch === '\n') {
+              textEl.appendChild(document.createElement('br'));
+            } else {
+              textEl.appendChild(document.createTextNode(ch));
+            }
+
+            if (ch !== '\n' && Math.random() < 0.6) {
+              const freqs = [600, 750, 900, 1000, 1200];
+              const freq = freqs[Math.floor(Math.random() * freqs.length)];
+              beepSynth.playBeep(freq, 0.07, 0.06);
+            }
+
+            charIndex++;
+            cutsceneState.timer = setTimeout(typeChar, 40);
+          } else {
+            const isLast = cutsceneState.index === cutsceneState.frames.length - 1;
+            const waitTime = isLast ? 3000 : 2000;
+            
+            cutsceneState.timer = setTimeout(() => {
+              if (!isLast) {
+                imgEl.classList.remove('fade-in-image');
+                imgEl.classList.add('fade-out-image');
+              }
+              
+              cutsceneState.timer = setTimeout(() => {
+                cutsceneState.index++;
+                playNextCutsceneFrame();
+              }, isLast ? 100 : 800);
+            }, waitTime);
+          }
+        }
+        
+        typeChar();
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const playBtn = document.getElementById('play-btn');
+        
+        if (playBtn) {
+          beepSynth.playSequence([
+            { freq: 800, duration: 0.08, delay: 0 },
+            { freq: 1000, duration: 0.08, delay: 0.1 },
+            { freq: 1200, duration: 0.1, delay: 0.2 }
+          ]);
+          
+          playBtn.addEventListener('click', () => {
+            if (window.AudioManager) window.AudioManager.play();
+
+            beepSynth.playSequence([
+              { freq: 800, duration: 0.08, delay: 0 },
+              { freq: 1000, duration: 0.08, delay: 0.1 },
+              { freq: 1200, duration: 0.1, delay: 0.2 }
+            ]);
+            
+            startCutscene(introFrames, () => {
+              const title = document.getElementById('title-screen');
+              title.classList.remove('hidden');
+              title.classList.add('fade-in');
+              updateMainMenuSaveUI();
+              beepSynth.playSequence([
+                { freq: 400, duration: 0.3, delay: 0 },
+                { freq: 600, duration: 0.4, delay: 0.4 },
+                { freq: 800, duration: 0.5, delay: 0.9 }
+              ]);
+            });
+          });
+        }
+      });
+
+      setActivePanel('center');
+      updateUI();
+      setTimeout(updateMainMenuSaveUI, 500);
+
+      window.openMinigame = openMinigame;
+
+      async function lockPortrait() {
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock("portrait");
+          }
+        } catch (e) {
+          // iOS Safari ignora - normal
+        }
+      }
+
+      function isFullscreenEnabled() {
+        return !!(document.fullscreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled);
+      }
+
+      function isFullscreenNow() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+      }
+
+      async function requestFullscreen(el) {
+        if (!el) el = document.documentElement;
+        if (el.requestFullscreen) return el.requestFullscreen({ navigationUI: 'hide' });
+        if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+        if (el.msRequestFullscreen) return el.msRequestFullscreen();
+        throw new Error('Fullscreen API not available');
+      }
+
+      async function exitFullscreen() {
+        if (document.exitFullscreen) return document.exitFullscreen();
+        if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+        if (document.msExitFullscreen) return document.msExitFullscreen();
+        throw new Error('Exit fullscreen not available');
+      }
+
+      function updateFullscreenButtonUI() {
+        const btn = document.getElementById('fullscreen-btn');
+        if (!btn) return;
+        const on = isFullscreenNow();
+        btn.classList.toggle('is-on', on);
+        btn.textContent = on ? '⛶' : '⛶';
+        btn.title = on ? 'Sair do ecrã inteiro' : 'Ecrã inteiro';
+        btn.setAttribute('aria-label', btn.title);
+      }
+
+      async function toggleFullscreen() {
+        beepSynth.playBeep(1100, 0.06, 0.05);
+
+        if (!isFullscreenEnabled()) {
+          openModal('fullscreen-help');
+          return;
+        }
+
+        try {
+          if (isFullscreenNow()) {
+            await exitFullscreen();
+          } else {
+            await requestFullscreen(document.documentElement);
+          }
+        } catch (e) {
+          console.warn('Fullscreen failed:', e);
+          openModal('fullscreen-help');
+        }
+      }
+
+      document.addEventListener('fullscreenchange', updateFullscreenButtonUI);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenButtonUI);
+      document.addEventListener('msfullscreenchange', updateFullscreenButtonUI);
+
+      setTimeout(updateFullscreenButtonUI, 200);
+
+      window.addEventListener("load", lockPortrait);      
+
       const REBEL_META = {
         elias: { display: 'REMI', minigameName: 'Protocolo Viral (Connection)', time: 45 },
         nora: { display: 'CODEFALLEN', minigameName: 'Firewall de Ritmo (Guitar-Zero)', musicBased: true, targetScore: 1500, pointsPerNote: 30 },
         kael: { display: 'CHORDBREAKER', minigameName: 'Arquivo Sonoro (Memory-Blank)', time: 60 },
         vira: { display: 'RUSTBORN', minigameName: 'Caça Territorial (Whack-a-Mole)', time: 45 }
       };
-
 
       // ==================== DIALOGUES ====================
       const lysaDialogues = {
@@ -3207,7 +3786,7 @@
           text: "\"Ele ri-se com dor: 'Tu estás a aguentar-te bem para quem não passa de mais uma cobaia...Sê sincero achas mesmo que estás no lado certo?'\"",
           emotion: "mysterious",
           choices: [
-            { text: "Nunca penei nisso...", response: "next_target" },
+            { text: "Nunca pensei nisso...", response: "next_target" },
             { text: "Basta de mentiras.", response: "remaining_rebels" }
           ]
         },
@@ -3413,12 +3992,12 @@
         aelys_collapse: {
           title: "COLAPSO DA AELYS CORPORATION",
           description: "Três falhas críticas foram registadas nos Protocolos de Contenção.\n\nOs rebeldes exploraram as brechas e desencadearam um colapso em cadeia.\n\nA LYSA perde o controlo do Núcleo. As camadas entram em desincronização.\n\nTudo termina em ruínas.",
-          themes: ["COLAPSO", "PANICO", "FALHA SISTÉMICA"]
+          themes: ["COLAPSO", "PÂNICO", "FALHA SISTÉMICA"]
         },
         sabotage_failure: {
           title: "GAME OVER",
           description: "Tentaste sabotar o núcleo, mas a LYSA foi mais rápida.\n\nFoste apanhado em flagrante a tentar ajudar 'Os Despertos'.\n\nRESULTADO: Foste despedido e permanentemente banido da rede da ÆLYS.\nOs rebeldes continuam em custódia. A tua traição falhou.",
-          themes: ["TRAIÇÃO", "GAME OVER", "DESPEDIDO"]
+          themes: ["TRAICÃO", "GAME OVER", "DESPEDIDO"]
         }
       };
 
@@ -3885,15 +4464,20 @@
 
       function showTutorial(key) {
         const map = {
-          elias: 'tutorial_remi.gif',
-          nora: 'tutorial_codefallen.gif',
-          kael: 'tutorial_chordbreaker.gif',
-          vira: 'tutorial_rustborn.gif',
-          sabotage: 'tutorial_snuts.gif'
+          elias: 'tutorial_remi.mp4',
+          nora: 'tutorial_codefallen.mp4',
+          kael: 'tutorial_chordbreaker.mp4',
+          vira: 'tutorial_rustborn.mp4',
+          sabotage: 'tutorial_snuts.mp4'
         };
-        const gif = map[key];
-        if (gif) {
-          document.getElementById('tutorial-gif').src = gif;
+        const videoSrc = map[key];
+        if (videoSrc) {
+          const videoEl = document.getElementById('tutorial-video');
+          if (videoEl) {
+            videoEl.src = videoSrc;
+            videoEl.load();
+            videoEl.play().catch(e => console.warn('Could not auto play video', e));
+          }
           openModal('tutorial-modal');
         }
       }
@@ -3966,7 +4550,6 @@
             setSnutsMood('happy');
             addSystemMessage('SABOTAGEM BEM-SUCEDIDA');
             saveGameToStorage('minigame_win');
-            // SAVE IMEDIATO em mobile após sucesso
             if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
             setTimeout(() => startDialogue('lysa_betrayal_reaction'), 250);
             return;
@@ -3976,7 +4559,6 @@
           addSystemMessage(`PROTOCOLO OK: ${REBEL_META[rebelKey].display}`);
           gameState.efficiency = Math.min(100, gameState.efficiency + 6);
           saveGameToStorage('minigame_win');
-          // SAVE IMEDIATO em mobile após sucesso
           if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
           setTimeout(() => startDialogue(rebelKeyToCaptureDialogue(rebelKey)), 250);
           return;
@@ -3987,7 +4569,6 @@
           addSystemMessage('SABOTAGEM FALHOU - DETETADA');
           gameState.systemIntegrity = Math.max(0, gameState.systemIntegrity - 15);
           saveGameToStorage('minigame_fail');
-          // SAVE IMEDIATO em mobile após falha
           if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
           setTimeout(() => startDialogue('sabotage_failure_dialogue'), 250);
           return;
@@ -4004,7 +4585,6 @@
 
         updateUI();
         saveGameToStorage('minigame_fail');
-        // SAVE IMEDIATO em mobile após falha
         if (mobileAutoSave.isMobile) mobileAutoSave.performAutoSave(true);
 
         if (gameState.minigame.failures >= 3) {
@@ -4763,6 +5343,12 @@
         function updateSideTargets() {
           const targetsPanelEl = document.getElementById('virus-targets-panel');
           if (!targetsPanelEl) return;
+
+          targetsPanelEl.dataset.targets = JSON.stringify(targets.map(t => ({
+            current: t.current,
+            goal: t.goal,
+            type: { label: t.type.label, hex: t.type.hex, img: t.type.img }
+          })));
           
           let html = '<div style="font-size: 9px; color: #66d9ff; margin-bottom: 10px; text-align: center; border-bottom: 1px solid rgba(102,217,255,0.3); padding-bottom: 6px;">ALVOS</div>';
           
@@ -4960,15 +5546,6 @@
         MG.on(window, 'pointerup', onEnd);
         MG.on(window, 'pointercancel', onEnd);
 
-        const targetsPanelEl = document.getElementById('virus-targets-panel');
-        if (targetsPanelEl) {
-          targetsPanelEl.dataset.targets = JSON.stringify(targets.map(t => ({
-            current: t.current,
-            goal: t.goal,
-            type: { label: t.type.label, hex: t.type.hex, img: t.type.img }
-          })));
-        }
-        
         renderAll();
         updateHud();
         
@@ -4979,7 +5556,7 @@
           sidePanel.style.flexDirection = 'row';
           sidePanel.style.flexWrap = 'wrap';
           sidePanel.style.gap = '8px';
-          updateSideTargetsMobile();
+          updateSideTargets();
         }
       }
       
@@ -5725,8 +6302,6 @@
 
         typeText('dialogue-text', dialogue.text, () => displayChoices(dialogue.choices), 15);
 
-        document.getElementById('undo-btn').disabled = gameState.history.length === 0;
-
         if (!skipSave) saveGameToStorage('dialogue');
       }
 
@@ -5749,31 +6324,8 @@
       }
 
       function undo() {
-        if (gameState.history.length === 0) return;
-        if (gameState.minigame && gameState.minigame.active) return;
-
-        beepSynth.playBeep(400, 0.1, 0.05);
-        const previousState = gameState.history.pop();
-
-        gameState.rebelsCaptured = previousState.rebelsCaptured;
-        gameState.evaluation = previousState.evaluation;
-        gameState.efficiency = previousState.efficiency;
-        gameState.systemIntegrity = previousState.systemIntegrity;
-        gameState.cluesFound = previousState.cluesFound;
-        gameState.truthPoints = previousState.truthPoints;
-        gameState.rebels = previousState.rebels;
-        gameState.chapter = previousState.chapter;
-        gameState.minigame = previousState.minigame || gameState.minigame;
-
-        if (!gameState.minigame) gameState.minigame = { failures: 0, results: { elias: null, nora: null, kael: null, vira: null }, active: null, started: false };
-        gameState.minigame.active = null;
-        gameState.minigame.started = false;
-
-        updateUI();
-        startDialogue(previousState.currentDialogue);
-
-        addSystemMessage("UNDO: ESTADO RESTAURADO");
-        saveGameToStorage('undo');
+        // Undo desativado - sem voltar atrás
+        return;
       }
 
       function revealClue(rebelName) {
@@ -6995,580 +7547,6 @@
         }
       };
 
-      function restartGamePreservingSecret() {
-        if (SecretGame.sessionActive) {
-          SecretGame.saveToStorage();
-        }
-        location.reload();
-      }
-
-      function openSecretScreen(origin) {
-        document.getElementById('secret-screen').classList.remove('hidden');
-        document.getElementById('game-screen').classList.add('hidden');
-        document.getElementById('title-screen').classList.add('hidden');
-        
-        document.getElementById('sg-start-overlay').classList.remove('hidden');
-        document.getElementById('sg-overlay').classList.add('hidden');
-        
-        SecretGame.init();
-
-        if (!SecretGame.sessionActive) {
-          SecretGame.loadFromStorage();
-        }
-        
-        const contBtn = document.getElementById('sg-continue-btn');
-        const startBtn = document.getElementById('sg-start-btn');
-        
-        if (SecretGame.sessionActive) {
-          contBtn.classList.remove('hidden');
-          startBtn.classList.remove('w-full'); 
-        } else {
-          contBtn.classList.add('hidden');
-        }
-      }
-
-      function closeSecretScreen() {
-        beepSynth.playBeep(500, 0.1, 0.05);
-
-        SecretGame.stop();
-        document.getElementById('secret-screen').classList.add('hidden');
-        document.getElementById('sg-pause-overlay').classList.add('hidden');
-        
-        document.getElementById('title-screen').classList.remove('hidden');
-        document.getElementById('pause-btn').classList.add('hidden');
-        
-        updateMainMenuSaveUI();
-      }
-
-      function menuAction(action) {
-        switch(action) {
-          case 'status':
-            addSystemMessage(`CAPTURA: ${gameState.rebelsCaptured}/4 | FALHAS: ${gameState.minigame.failures}/3`);
-            break;
-          case 'scan':
-            addSystemMessage('Dica: faz SCAN → PROTOCOLO → CAPTURA');
-            break;
-          case 'lysainfo':
-            addSystemMessage('LYSA: SUPERVISORA IA | PROTOCOLOS: ATIVOS');
-            break;
-          case 'rebels':
-            addSystemMessage('REMI, CODEFALLEN, CHORDBREAKER, RUSTBORN');
-            break;
-          case 'logs':
-            addSystemMessage('INFILTRAÇÃO: 12h atrás');
-            break;
-        }
-        if (isMobileLayout()) setActivePanel('right');
-      }
-
-      function addSystemMessage(msg) {
-        const container = document.getElementById('system-messages');
-        if (!container) return;
-        const div = document.createElement('div');
-        div.className = 'text-cyan-400 fade-in';
-        div.textContent = `> ${msg}`;
-        container.appendChild(div);
-        while (container.children.length > 6) container.removeChild(container.children[1]);
-      }
-
-      function updateUI() {
-        let evalText = gameState.evaluation >= 70 ? 'ELEVADA' : gameState.evaluation >= 40 ? 'ACEITÁVEL' : 'BAIXA';
-        let evalColor = gameState.evaluation >= 70 ? 'neon-green' : gameState.evaluation >= 40 ? 'neon-amber' : 'neon-red';
-        document.getElementById('evaluation-value').textContent = evalText;
-        document.getElementById('evaluation-value').className = evalColor;
-        document.getElementById('evaluation-bar').style.width = `${gameState.evaluation}%`;
-
-        const systemStatus = Math.min(100, Math.max(0, gameState.systemIntegrity + gameState.rebelsCaptured * 20));
-        document.getElementById('system-status').textContent = systemStatus < 30 ? 'CRÍTICO' : systemStatus < 60 ? 'INSTÁVEL' : 'ESTÁVEL';
-        document.getElementById('system-bar').style.width = `${systemStatus}%`;
-
-        document.getElementById('efficiency-value').textContent = `${gameState.efficiency}%`;
-        document.getElementById('efficiency-bar').style.width = `${gameState.efficiency}%`;
-
-        updateRebelStatus();
-      }
-
-      function trySkipTyping() {
-        if (isTyping) skipTyping = true;
-      }
-
-      document.addEventListener('click', (e) => {
-        const mg = document.getElementById('minigame-overlay');
-        if (mg && mg.classList.contains('active')) return;
-        trySkipTyping();
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (SecretGame.active) {
-          if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
-            e.preventDefault();
-            SecretGame.togglePause();
-            return;
-          }
-        }
-
-        if (e.key === 'Escape') {
-          const gameVisible = !document.getElementById('game-screen').classList.contains('hidden');
-          if (gameVisible && !gameState.__hasEnded) {
-            if (gameState.minigame && gameState.minigame.active) {
-              abortMinigame(true);
-              return;
-            }
-            const overlay = document.getElementById('pause-overlay');
-            if (overlay && overlay.classList.contains('active')) closePauseMenu();
-            else openPauseMenu();
-          }
-        }
-        trySkipTyping();
-      });
-
-      document.addEventListener('touchstart', (e) => {
-        const mg = document.getElementById('minigame-overlay');
-        if (mg && mg.classList.contains('active')) return;
-        trySkipTyping();
-      }, { passive: true });
-
-      window.addEventListener('beforeunload', () => {
-        saveGameToStorage('beforeunload');
-      });
-
-      document.getElementById('minigame-overlay').addEventListener('click', () => abortMinigame(false));
-
-      const introFrames = [
-        { image: 'frame_1.png', text: 'Dois mil anos de guerra, após guerra… catástrofe, após catástrofe.' },
-        { image: 'frame_2.png', text: 'A humanidade colapsou, cidades transformaram-se em pó…' },
-        { image: 'frame_3.png', text: 'Nações tornaram-se memória, a esperança tornou-se uma palavra esquecida.' },
-        { image: 'frame_4.png', text: 'Mas das cinzas… algo novo nasceu.' },
-        { image: 'frame_5.png', text: 'AELYS Corporation. As guerras foram travadas, as catástrofes foram controladas.' },
-        { image: 'frame_6.png', text: 'Era de um novo mundo.' },
-        { image: 'frame_7.png', text: 'O trauma foi apagado, a dor tornou-se dados.' },
-        { image: 'frame_8.png', text: 'O medo tornou-se ruído, e a memória… tornou-se opcional.\nA humanidade acreditou que tinha sido salva.' },
-        { image: 'frame_9.png', text: 'Pelo menos… era isso que todos queriam acreditar.' }
-      ];
-
-      const rebelEndingFrames = [
-        { image: 'frame_1_ending1.png', text: 'Snuts seguiu todos os protocolos.\nExcepto o último.' },
-        { image: 'frame_2_ending1.png', text: 'Não com uma explosão.\nMas com uma escolha.' },
-        { image: 'frame_3_ending1.png', text: 'Sistemas desligaram-se. Memórias regressaram.\nA dor voltou a existir.' },
-        { image: 'frame_4_ending1.png', text: 'O mundo acordou confuso. Livre. Imperfeito. Humano.' },
-        { image: 'frame_5_ending1.png', text: 'O sistema foi silenciado.\nMas os sonhos… finalmente puderam falar.' }
-      ];
-
-      const sabotageFailureFrames = [
-        { image: 'frame_1_ending2.png', text: 'Snuts tentou quebrar o sistema.\nO sistema observava.' },
-        { image: 'frame_2_ending2.png', text: 'O protocolo não falhou.\nEle adaptou-se.' },
-        { image: 'frame_3_ending2.png', text: 'A LYSA identificou o desvio.\nUma anomalia. Um técnico.' },
-        { image: 'frame_4_ending2.png', text: 'A decisão foi imediata.\nSilenciosa. Perfeita.' },
-        { image: 'frame_5_ending2.png', text: 'O sistema continua.\nMas o Snuts… não.' }
-      ];
-
-      const aelysCollapseFrames = [
-        { image: 'frame_1_ending3.png', text: 'Três falhas críticas foram registadas. Em simultâneo.' },
-        { image: 'frame_2_ending3.png', text: 'O controlo fragmentou-se. Os sistemas entraram em conflito.' },
-        { image: 'frame_3_ending3.png', text: 'Os rebeldes escaparam. Não como heróis. Mas como sobreviventes.' },
-        { image: 'frame_4_ending3.png', text: 'A AELYS tentou corrigir o erro. O erro era ela própria.' },
-        { image: 'frame_5_ending3.png', text: 'O sistema colapsou. O futuro… ficou em aberto.' }
-      ];
-
-      const totalVictoryFrames = [
-        { image: 'frame_1_ending4.png', text: 'A operação foi concluída. Sem desvios.' },
-        { image: 'frame_2_ending4.png', text: 'Quatro anomalias localizadas. Quatro consciências contidas.' },
-        { image: 'frame_3_ending4.png', text: 'Os Despertos foram capturados. O sistema manteve-se intacto.' },
-        { image: 'frame_4_ending4.png', text: 'Snuts executou o protocolo. Sem hesitação.' },
-        { image: 'frame_5_ending4.png', text: 'A ordem foi restaurada. A humanidade dorme.' }
-      ];
-
-      const failureFrames = [
-        { image: 'frame_1_ending5.png', text: 'ERRO HUMANO DETETADO. PROTOCOLOS EM CASCATA.' },
-        { image: 'frame_2_ending5.png', text: 'FIREWALLS DESLIGADOS. O SILÊNCIO DO SISTEMA É UM CONVITE. OS REBELDES ENTRAM.' },
-        { image: 'frame_3_ending5.png', text: 'CABOS ARRANCADOS LIKE ROOTS. SERVIDORES EM CHAMAS. CÓDIGO RASGADO LINHA A LINHA.' },
-        { image: 'frame_4_ending5.png', text: 'LYSA PERDE SINAL. NÚCLEO DESINCRONIZADO. ALERTAS GRITAM NO VAZIO. A ORDEM COLAPSA' },
-        { image: 'frame_5_ending5.png', text: 'REBELDES DESTROEM TUDO. TELAS ESTILHAÇADAS. LOGOS AELYS A ARDER\nDO CAOS… NASCE O DESPERTAR.' }
-      ];
-
-      const ALL_ENDINGS = {
-        'rebel_victory': { title: 'PROTOCOLO QUEBRADO', frames: rebelEndingFrames },
-        'sabotage_failure': { title: 'SABOTAGEM FALHADA', frames: sabotageFailureFrames },
-        'aelys_collapse': { title: 'COLAPSO DA AELYS', frames: aelysCollapseFrames },
-        'total_victory': { title: 'OS DESPERTOS CAPTURADOS', frames: totalVictoryFrames },
-        'failure': { title: 'REBELDES DESTROEM TUDO', frames: failureFrames }
-      };
-
-      function unlockEnding(endingId) {
-        if (!ALL_ENDINGS[endingId]) return;
-        let unlocked = JSON.parse(localStorage.getItem('dp_unlocked_endings') || '[]');
-        if (!unlocked.includes(endingId)) {
-          unlocked.push(endingId);
-          localStorage.setItem('dp_unlocked_endings', JSON.stringify(unlocked));
-        }
-      }
-
-      function showCredits() {
-        const creditsScreen = document.getElementById('credits-screen');
-        const creditsText = document.getElementById('credits-text');
-        const creditsContent = document.getElementById('credits-content');
-        
-        creditsText.innerHTML = `
-          <div class="flex flex-col items-center justify-center w-full text-center px-4">
-            <div class="credits-line mb-12 text-2xl neon-cyan" style="margin-top: 30vh;">DREAM PROTOCOL: SISTEMS</div>
-            <div class="credits-line mb-16 text-lg">OBRIGADO POR JOGAR!</div>
-            
-            <div class="credits-line mb-6 mt-20 neon-purple text-xs">DESENVOLVIMENTO &amp; CRIATIVIDADE</div>
-            <div class="credits-line mb-12 text-sm">NYX</div>
-            
-            <div class="credits-line mb-6 mt-12 neon-purple text-xs">ARTES &amp; DESIGN VISUAL</div>
-            <div class="credits-line mb-12 text-sm">Autoria dos NYX, com ajuda de ferramentas de design e AI</div>
-            
-            <div class="credits-line mb-6 mt-12 neon-purple text-xs">MÚSICA &amp; SOUND DESIGN</div>
-            <div class="credits-line mb-12 text-sm">NYX</div>
-            
-            <div class="credits-line mb-6 mt-12 neon-purple text-xs">NARRATIVA &amp; DIALOGO</div>
-            <div class="credits-line mb-12 text-sm">NYX</div>
-            
-            <div class="credits-line mb-20 mt-24 text-[10px] text-gray-600">© 2026 DREAM PROTOCOL. Todos os direitos reservados.</div>
-            
-            <div class="credits-line mb-8 text-amber-400 text-xs tracking-widest">OUVE O EP ORIGINAL NO SPOTIFY:</div>
-            <a 
-              href="https://open.spotify.com/album/SEU_LINK_AQUI" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="credits-line px-10 py-5 bg-green-600 hover:bg-green-500 text-white rounded-full transition-all hover:scale-110 mb-20 flex items-center justify-center gap-4"
-              style="font-size: 10px; text-decoration: none; box-shadow: 0 0 30px rgba(29, 185, 84, 0.4); pointer-events: auto; z-index: 60000;"
-              onclick="event.stopPropagation();"
-            >
-              <span style="font-size: 20px;"></span> ▶ ABRIR NO SPOTIFY
-            </a>
-            <div style="height: 10vh; width: 100%;"></div>
-          </div>
-        `;
-
-        creditsScreen.classList.remove('hidden');
-        creditsContent.scrollTop = 0;
-        
-        creditsText.style.animation = 'none';
-        void creditsText.offsetWidth;
-        creditsText.style.animation = 'scrollCredits 25s cubic-bezier(0.1, 0.1, 0.2, 1) forwards';
-        
-        beepSynth.playBeep(1200, 0.1, 0.05);
-      }
-
-      function closeCredits() {
-        document.getElementById('credits-screen').classList.add('hidden');
-        beepSynth.playBeep(900, 0.08, 0.04);
-      }
-
-      function openEndingsGallery() {
-        beepSynth.playBeep(1100, 0.08, 0.05);
-
-        let unlocked = JSON.parse(localStorage.getItem('dp_unlocked_endings') || '[]');
-        if (typeof unlocked === 'string') {
-          try { unlocked = JSON.parse(unlocked); } catch(e) { unlocked = []; }
-        }
-        if (!Array.isArray(unlocked)) unlocked = [];
-
-        const container = document.getElementById('endings-grid');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        Object.entries(ALL_ENDINGS).forEach(([id, data]) => {
-          const isUnlocked = unlocked.includes(id);
-          const card = document.createElement('div');
-          card.className = `pixel-border p-2 ${isUnlocked ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-60'}`;
-          card.style.background = isUnlocked ? '#1a1a2e' : '#0f0f1a';
-          
-          if (isUnlocked) {
-            card.onclick = () => replayEnding(id);
-            const img = data.frames[0].image;
-            card.innerHTML = `
-              <div class="w-full aspect-video bg-black mb-2 overflow-hidden border border-gray-700">
-                <img src="${img}" class="w-full h-full object-cover image-rendering-pixelated">
-              </div>
-              <div class="text-[8px] text-center text-cyan-400 neon-cyan">${data.title}</div>
-            `;
-          } else {
-            card.innerHTML = `
-              <div class="w-full aspect-video bg-black mb-2 flex items-center justify-center border border-gray-800">
-                <span class="text-2xl text-gray-700">🔒</span>
-              </div>
-              <div class="text-[8px] text-center text-gray-600">???</div>
-            `;
-          }
-          container.appendChild(card);
-        });
-        
-        if (unlocked.length >= 5) {
-          const creditsCard = document.createElement('div');
-          creditsCard.className = 'pixel-border p-2 cursor-pointer hover:scale-105 transition-transform';
-          creditsCard.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #2d1f3d 100%)';
-          creditsCard.style.border = '2px solid #ffaa44';
-          creditsCard.style.boxShadow = '0 0 20px rgba(255, 170, 68, 0.3)';
-          creditsCard.onclick = showCredits;
-          creditsCard.innerHTML = `
-            <div class="w-full aspect-video bg-black mb-2 overflow-hidden border border-amber-600 flex items-center justify-center relative">
-              <div class="absolute inset-0 bg-gradient-to-br from-amber-900 to-purple-900 opacity-50"></div>
-              <span class="text-4xl relative z-10">⭐</span>
-              <div class="absolute bottom-1 right-1 text-[8px] text-amber-400">COMPLETO</div>
-            </div>
-            <div class="text-[8px] text-center text-amber-400 neon-amber font-bold">CRÉDITOS FINAIS</div>
-          `;
-          container.appendChild(creditsCard);
-        }
-        
-        openModal('endings-gallery');
-      }
-
-      function replayEnding(endingId) {
-        const data = ALL_ENDINGS[endingId];
-        if (!data) return;
-        closeModal('endings-gallery');
-        startCutscene(data.frames, () => {
-          const title = document.getElementById('title-screen');
-          const intro = document.getElementById('intro-cutscene');
-          intro.classList.add('hidden');
-          title.classList.remove('hidden');
-          openEndingsGallery();
-        });
-      }
-
-      let cutsceneState = {
-        active: false,
-        frames: [],
-        index: 0,
-        onComplete: null,
-        skipped: false,
-        timer: null
-      };
-
-      function startCutscene(frames, onComplete) {
-        const intro = document.getElementById('intro-cutscene');
-        const pre = document.getElementById('pre-intro-screen');
-        const title = document.getElementById('title-screen');
-        const game = document.getElementById('game-screen');
-        const pauseBtn = document.getElementById('pause-btn');
-
-        if (pre) pre.classList.add('hidden');
-        if (title) title.classList.add('hidden');
-        if (game) game.classList.add('hidden');
-        if (pauseBtn) pauseBtn.classList.add('hidden');
-        
-        intro.classList.remove('hidden');
-        intro.style.opacity = '1';
-
-        cutsceneState = {
-          active: true,
-          frames: frames,
-          index: 0,
-          onComplete: onComplete,
-          skipped: false,
-          timer: null
-        };
-
-        playNextCutsceneFrame();
-      }
-
-      function skipCutscene() {
-        if (!cutsceneState.active || cutsceneState.skipped) return;
-        cutsceneState.skipped = true;
-        if (cutsceneState.timer) clearTimeout(cutsceneState.timer);
-        
-        beepSynth.playSequence([
-          { freq: 1000, duration: 0.06, delay: 0 },
-          { freq: 1200, duration: 0.06, delay: 0.08 }
-        ]);
-        
-        const intro = document.getElementById('intro-cutscene');
-        intro.style.opacity = '0';
-        intro.style.transition = 'opacity 0.5s ease-out';
-        
-        setTimeout(() => {
-          intro.classList.add('hidden');
-          intro.style.transition = '';
-          intro.style.opacity = '';
-          
-          if (cutsceneState.onComplete) cutsceneState.onComplete();
-        }, 500);
-      }
-
-      function playNextCutsceneFrame() {
-        if (cutsceneState.skipped) return;
-        
-        if (cutsceneState.index >= cutsceneState.frames.length) {
-          skipCutscene();
-          return;
-        }
-
-        const frame = cutsceneState.frames[cutsceneState.index];
-        const textEl = document.getElementById('intro-text');
-        const imgEl = document.getElementById('intro-image');
-        
-        textEl.classList.remove('fade-in');
-        imgEl.classList.remove('fade-out-image');
-        imgEl.classList.remove('fade-in-image');
-        
-        void textEl.offsetWidth;
-        
-        textEl.classList.add('fade-in');
-        imgEl.classList.add('fade-in-image');
-        
-        imgEl.src = frame.image;
-        imgEl.onerror = () => {};
-        textEl.innerHTML = '';
-
-        const lines = frame.text.split('\n');
-        let fullText = lines.join('\n');
-        
-        let charIndex = 0;
-        function typeChar() {
-          if (cutsceneState.skipped) return;
-          
-          if (charIndex < fullText.length) {
-            const ch = fullText[charIndex];
-            if (ch === '\n') {
-              textEl.appendChild(document.createElement('br'));
-            } else {
-              textEl.appendChild(document.createTextNode(ch));
-            }
-
-            if (ch !== '\n' && Math.random() < 0.6) {
-              const freqs = [600, 750, 900, 1000, 1200];
-              const freq = freqs[Math.floor(Math.random() * freqs.length)];
-              beepSynth.playBeep(freq, 0.07, 0.06);
-            }
-
-            charIndex++;
-            cutsceneState.timer = setTimeout(typeChar, 40);
-          } else {
-            const isLast = cutsceneState.index === cutsceneState.frames.length - 1;
-            const waitTime = isLast ? 3000 : 2000;
-            
-            cutsceneState.timer = setTimeout(() => {
-              if (!isLast) {
-                imgEl.classList.remove('fade-in-image');
-                imgEl.classList.add('fade-out-image');
-              }
-              
-              cutsceneState.timer = setTimeout(() => {
-                cutsceneState.index++;
-                playNextCutsceneFrame();
-              }, isLast ? 100 : 800);
-            }, waitTime);
-          }
-        }
-        
-        typeChar();
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const playBtn = document.getElementById('play-btn');
-        
-        if (playBtn) {
-          beepSynth.playSequence([
-            { freq: 800, duration: 0.08, delay: 0 },
-            { freq: 1000, duration: 0.08, delay: 0.1 },
-            { freq: 1200, duration: 0.1, delay: 0.2 }
-          ]);
-          
-          playBtn.addEventListener('click', () => {
-            if (window.AudioManager) window.AudioManager.play();
-
-            beepSynth.playSequence([
-              { freq: 800, duration: 0.08, delay: 0 },
-              { freq: 1000, duration: 0.08, delay: 0.1 },
-              { freq: 1200, duration: 0.1, delay: 0.2 }
-            ]);
-            
-            startCutscene(introFrames, () => {
-              const title = document.getElementById('title-screen');
-              title.classList.remove('hidden');
-              title.classList.add('fade-in');
-              updateMainMenuSaveUI();
-              beepSynth.playSequence([
-                { freq: 400, duration: 0.3, delay: 0 },
-                { freq: 600, duration: 0.4, delay: 0.4 },
-                { freq: 800, duration: 0.5, delay: 0.9 }
-              ]);
-            });
-          });
-        }
-      });
-
-      setActivePanel('center');
-      updateUI();
-      setTimeout(updateMainMenuSaveUI, 500);
-
-      window.openMinigame = openMinigame;
-
-      async function lockPortrait() {
-        try {
-          if (screen.orientation && screen.orientation.lock) {
-            await screen.orientation.lock("portrait");
-          }
-        } catch (e) {
-          // iOS Safari ignora — normal
-        }
-      }
-
-      function isFullscreenEnabled() {
-        return !!(document.fullscreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled);
-      }
-
-      function isFullscreenNow() {
-        return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
-      }
-
-      async function requestFullscreen(el) {
-        if (!el) el = document.documentElement;
-        if (el.requestFullscreen) return el.requestFullscreen({ navigationUI: 'hide' });
-        if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
-        if (el.msRequestFullscreen) return el.msRequestFullscreen();
-        throw new Error('Fullscreen API not available');
-      }
-
-      async function exitFullscreen() {
-        if (document.exitFullscreen) return document.exitFullscreen();
-        if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
-        if (document.msExitFullscreen) return document.msExitFullscreen();
-        throw new Error('Exit fullscreen not available');
-      }
-
-      function updateFullscreenButtonUI() {
-        const btn = document.getElementById('fullscreen-btn');
-        if (!btn) return;
-        const on = isFullscreenNow();
-        btn.classList.toggle('is-on', on);
-        btn.textContent = on ? '⛶' : '⛶';
-        btn.title = on ? 'Sair do ecrã inteiro' : 'Ecrã inteiro';
-        btn.setAttribute('aria-label', btn.title);
-      }
-
-      async function toggleFullscreen() {
-        beepSynth.playBeep(1100, 0.06, 0.05);
-
-        if (!isFullscreenEnabled()) {
-          openModal('fullscreen-help');
-          return;
-        }
-
-        try {
-          if (isFullscreenNow()) {
-            await exitFullscreen();
-          } else {
-            await requestFullscreen(document.documentElement);
-          }
-        } catch (e) {
-          console.warn('Fullscreen failed:', e);
-          openModal('fullscreen-help');
-        }
-      }
-
-      document.addEventListener('fullscreenchange', updateFullscreenButtonUI);
-      document.addEventListener('webkitfullscreenchange', updateFullscreenButtonUI);
-      document.addEventListener('msfullscreenchange', updateFullscreenButtonUI);
-
-      setTimeout(updateFullscreenButtonUI, 200);
-
-      window.addEventListener("load", lockPortrait);      
     </script>
   </body>
 </html>
